@@ -1,0 +1,544 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>dashbaord_Saif · Urgency</title>
+<style>
+:root {
+  color-scheme: light;
+  --page: #f9f9f7; --surface: #fcfcfb; --border: rgba(11,11,11,0.10);
+  --ink: #0b0b0b; --ink-2: #52514e; --muted: #898781;
+  --grid: #e1e0d9; --axis: #c3c2b7;
+  --neutral: #2a78d6; --negative: #eb6834; --zero: #b5b3ab;
+  --prior: #52514e; --orig: #0b0b0b; --mid: #f0efec;
+  --o1: #86b6ef; --o2: #5598e7; --o3: #2a78d6; --o4: #1c5cab; --o5: #104281;
+  --d1: #e34948; --d2: #f1a09f; --d4: #86b6ef; --d5: #2a78d6;
+  --chip: #ecebe6; --chip-on: #0b0b0b; --chip-on-ink: #ffffff;
+  --good: #006300; --warn-bg: #fdf3dc;
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+    --page: #0d0d0d; --surface: #1a1a19; --border: rgba(255,255,255,0.10);
+    --ink: #ffffff; --ink-2: #c3c2b7; --muted: #898781;
+    --grid: #2c2c2a; --axis: #383835;
+    --neutral: #3987e5; --negative: #d95926; --zero: #5d5c57;
+    --prior: #c3c2b7; --orig: #ffffff; --mid: #383835;
+    --o1: #184f95; --o2: #256abf; --o3: #3987e5; --o4: #6da7ec; --o5: #9ec5f4;
+    --d1: #e66767; --d2: #8a3b3b; --d4: #1c5cab; --d5: #3987e5;
+    --chip: #262624; --chip-on: #ffffff; --chip-on-ink: #0b0b0b;
+    --good: #0ca30c; --warn-bg: #3a2f12;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0d0d0d; --surface: #1a1a19; --border: rgba(255,255,255,0.10);
+  --ink: #ffffff; --ink-2: #c3c2b7; --muted: #898781;
+  --grid: #2c2c2a; --axis: #383835;
+  --neutral: #3987e5; --negative: #d95926; --zero: #5d5c57;
+  --prior: #c3c2b7; --orig: #ffffff; --mid: #383835;
+  --o1: #184f95; --o2: #256abf; --o3: #3987e5; --o4: #6da7ec; --o5: #9ec5f4;
+  --d1: #e66767; --d2: #8a3b3b; --d4: #1c5cab; --d5: #3987e5;
+  --chip: #262624; --chip-on: #ffffff; --chip-on-ink: #0b0b0b;
+  --good: #0ca30c; --warn-bg: #3a2f12;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--page); color: var(--ink);
+  font: 14px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+.wrap { max-width: 1240px; margin: 0 auto; padding: 24px 16px 64px; }
+header h1 { font-size: 26px; margin: 0 0 4px; letter-spacing: -0.01em; }
+header p { margin: 0; color: var(--ink-2); max-width: 840px; }
+.theme-btn { float: right; background: var(--chip); color: var(--ink); border: 1px solid var(--border);
+  border-radius: 8px; padding: 6px 10px; cursor: pointer; font: inherit; font-size: 13px; }
+@media (min-width: 900px) and (min-height: 700px) { .filters { position: sticky; top: 0; z-index: 5; } }
+.filters { background: var(--page); display: flex; flex-wrap: wrap;
+  gap: 16px 24px; padding: 14px 0; margin: 16px 0 8px; border-bottom: 1px solid var(--grid); }
+.filter { display: flex; flex-direction: column; gap: 6px; }
+.filter label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+.seg { display: inline-flex; flex-wrap: wrap; gap: 4px; }
+.seg button { background: var(--chip); color: var(--ink); border: 0; border-radius: 999px; padding: 6px 12px;
+  font: inherit; font-size: 13px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--chip-on); color: var(--chip-on-ink); }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin: 12px 0; }
+.tile { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
+.tile .k { font-size: 12px; color: var(--ink-2); }
+.tile .v { font-size: 28px; font-weight: 600; margin-top: 2px; }
+.tile .s { font-size: 12px; color: var(--muted); }
+.verdicts { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin: 12px 0; }
+.verdict { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+.verdict .g { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+.verdict .ev { font-size: 22px; font-weight: 650; margin: 2px 0 6px; }
+.verdict .d { font-size: 13px; color: var(--ink-2); }
+.verdict .d b { color: var(--ink); }
+.bar-pi { margin-top: 10px; }
+h2 { font-size: 18px; margin: 36px 0 4px; }
+.lead { color: var(--ink-2); margin: 0 0 14px; max-width: 880px; }
+.grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); }
+.grid.three { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; min-width: 0; }
+.card h3 { font-size: 14px; margin: 0 0 2px; }
+.card .sub { font-size: 12px; color: var(--muted); margin: 0 0 10px; }
+.chart { width: 100%; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12px; color: var(--ink-2); margin-bottom: 8px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+.sw.line { height: 2px; border-radius: 0; width: 14px; }
+svg text { font-family: inherit; }
+.tick { fill: var(--muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+.lbl { fill: var(--ink-2); font-size: 12px; }
+.val { fill: var(--ink); font-size: 11px; font-weight: 600; }
+.callout { font-size: 13px; color: var(--ink-2); margin-top: 8px; }
+.callout b { color: var(--ink); }
+table { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
+th, td { text-align: right; padding: 7px 8px; border-bottom: 1px solid var(--grid); white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+th { color: var(--ink-2); font-weight: 600; font-size: 12px; }
+td.ok { color: var(--good); font-weight: 600; }
+td.chk { background: var(--warn-bg); font-weight: 600; }
+.scroll { overflow-x: auto; }
+.q { font-size: 13px; color: var(--ink); margin: 14px 0 4px; }
+details summary { cursor: pointer; color: var(--ink-2); font-weight: 600; }
+.note { font-size: 12px; color: var(--muted); margin-top: 10px; }
+#tip { position: fixed; pointer-events: none; z-index: 20; background: var(--surface); color: var(--ink);
+  border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; font-size: 12px; line-height: 1.45;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.14); opacity: 0; transition: opacity .08s; max-width: 260px; }
+#tip .t { font-weight: 600; margin-bottom: 2px; }
+#tip .m { color: var(--ink-2); }
+.hit { fill: transparent; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <button class="theme-btn" id="themeBtn" type="button">Toggle theme</button>
+  <h1>dashbaord_Saif · Urgency</h1>
+  <p>Does a negatively worded TODO/FIXME comment make developers rate the problem as <b>more urgent</b>? This page covers only the urgency rating. It combines the survey responses, a fresh seeded re-run of the authors' Bayesian model (<code>run_urgency.R</code>), and a check of whether the original results reproduce.</p>
+</header>
+
+<div class="filters" role="toolbar" aria-label="Filters">
+  <div class="filter"><label>Sample (survey sections)</label><div class="seg" id="fSample"></div></div>
+  <div class="filter"><label>Belief group (survey sections)</label><div class="seg" id="fGroup"></div></div>
+  <div class="filter"><label>Model chart: compare re-run with</label><div class="seg" id="fCompare"></div></div>
+</div>
+
+<h2>The answer, by belief group</h2>
+<p class="lead">From the re-run model: the effect of negative wording on the urgency score (log-odds scale), and how strong the evidence is that it is positive. The groups come from statement 3, "a particularly negative comment means a more important issue".</p>
+<div class="verdicts" id="verdicts"></div>
+
+<h2>1 · What participants said</h2>
+<p class="lead">Each participant rated the urgency of four comments on a 1–5 scale. Two of the comments were negative and two neutral, and which ones depended on the participant's flow.</p>
+<div class="tiles" id="tiles"></div>
+<div class="grid">
+  <div class="card">
+    <h3>Mean urgency per comment</h3>
+    <p class="sub">The same comment in its negative and neutral wording</p>
+    <div class="legend"><span><i class="sw" style="background:var(--negative)"></i>Negative wording</span><span><i class="sw" style="background:var(--neutral)"></i>Neutral wording</span></div>
+    <div class="chart" id="c-means"></div>
+  </div>
+  <div class="card">
+    <h3>Urgency by belief group</h3>
+    <p class="sub">Mean urgency across all comments. Always shows all three groups.</p>
+    <div class="legend"><span><i class="sw" style="background:var(--negative)"></i>Negative wording</span><span><i class="sw" style="background:var(--neutral)"></i>Neutral wording</span></div>
+    <div class="chart" id="c-groups"></div>
+  </div>
+  <div class="card">
+    <h3>How the urgency scores are spread</h3>
+    <p class="sub">The share of ratings at each score</p>
+    <div class="legend" id="lg-dist"></div>
+    <div class="chart" id="c-dist"></div>
+    <div class="callout" id="co-dist"></div>
+  </div>
+  <div class="card">
+    <h3>Each participant: negative minus neutral</h3>
+    <p class="sub">Each participant's average urgency for their negative comments minus their neutral comments</p>
+    <div class="legend"><span><i class="sw" style="background:var(--negative)"></i>Negative rated more urgent</span><span><i class="sw" style="background:var(--zero)"></i>Same</span><span><i class="sw" style="background:var(--neutral)"></i>Neutral rated more urgent</span></div>
+    <div class="chart" id="c-diff"></div>
+    <div class="callout" id="co-diff"></div>
+  </div>
+</div>
+
+<h2>2 · What the model concludes</h2>
+<p class="lead">Ordered-logit model: <code>phi = sentiment[negative?, belief] + constructed[C] + experience·E</code>. The top row shows the model parameter, meaning how far negative wording moves urgency on the log-odds scale. The bottom row turns that into rating differences, from 100,000 simulated pairs of negative vs neutral ratings per group.</p>
+<div class="legend"><span><i class="sw" style="background:var(--neutral)"></i>Re-run posterior (after data)</span><span><i class="sw line" style="background:var(--prior)"></i>Prior (before data)</span></div>
+<div class="grid three" id="c-dens"></div>
+<div class="legend" id="lg-sim" style="margin-top:16px"></div>
+<div class="grid three" id="c-sim"></div>
+<div class="card" style="margin-top:16px">
+  <h3>Model summary (re-run)</h3>
+  <p class="sub">Effect of negative wording on urgency (log-odds). The 89% interval follows the authors' convention. The evidence label comes from <code>brms::hypothesis</code>, using the same thresholds as the original notebook.</p>
+  <div class="scroll"><table id="tbl-summary"></table></div>
+</div>
+
+<h2>3 · Does the original result reproduce?</h2>
+<p class="lead">The authors' simulated urgency differences (in <code>output/</code>, no fixed seed) compared with the seeded re-run (in <code>output_urgency/</code>). Monte-Carlo noise alone should keep the two within about 2 percentage points.</p>
+<div class="grid">
+  <div class="card">
+    <h3>Original vs re-run: simulated rating differences</h3>
+    <p class="sub">Share of the 100,000 simulations in each outcome</p>
+    <div class="scroll"><table id="tbl-repro"></table></div>
+    <div class="callout" id="co-repro"></div>
+  </div>
+  <div class="card">
+    <h3>Sampler diagnostics (re-run)</h3>
+    <p class="sub">R-hat ≈ 1.00 and a large effective sample size (ESS) mean the 4 chains agree and the estimates are stable</p>
+    <div class="scroll"><table id="tbl-precis"></table></div>
+  </div>
+</div>
+
+<h2>4 · Beliefs about negative comments</h2>
+<p class="lead">1 = strongly disagree … 5 = strongly agree. Statement 3 defines the belief groups used above. Follows the sample and belief-group filters.</p>
+<div class="card">
+  <div class="legend" id="lg-lik"></div>
+  <div id="c-lik"></div>
+</div>
+
+<h2>5 · Who took part</h2>
+<div class="grid three">
+  <div class="card"><h3>Programming experience</h3><p class="sub">Years, in 5-year bins</p><div class="chart" id="c-exp"></div></div>
+  <div class="card"><h3>Belief groups</h3><p class="sub">Participants per group (statement 3)</p><div class="chart" id="c-bg"></div></div>
+  <div class="card"><h3>Survey flow</h3><p class="sub">Flow 1 sees comments 1 &amp; 3 negative. Flow 2 sees 2 &amp; 4 negative.</p><div class="chart" id="c-flow"></div></div>
+</div>
+
+<h2>6 · Raw urgency responses</h2>
+<div class="card">
+  <details>
+    <summary id="raw-sum">Show response table</summary>
+    <div class="scroll" style="margin-top:12px"><table id="tbl-raw"></table></div>
+    <p class="note">U1–U4 are the urgency ratings for comments 1–4. Shaded cells are the negatively worded comments. The 3 pilot responses are excluded.</p>
+  </details>
+</div>
+<p class="note">Source: <code>export_jan_23_no_ip_no_email.csv</code>, <code>output/</code> (original run) and <code>output_urgency/</code> (re-run via <code>run_urgency.R</code> in the <code>satd</code> Docker image).</p>
+</div>
+<div id="tip" role="tooltip"></div>
+
+<script>
+const DATA = {"responses":[{"id":1,"flow":1,"progress":63,"finished":false,"duration":206,"age":null,"exp":null,"employment":null,"outside":[],"often":null,"negOften":null,"negAcross":null,"p1":null,"p2":null,"p3":null,"inAnalysis":false,"group":null,"urgency":[1.0,1.0,null,null]},{"id":2,"flow":1,"progress":100,"finished":true,"duration":1853,"age":30.0,"exp":6.0,"employment":"1","outside":["2"],"often":2.0,"negOften":2.0,"negAcross":3.0,"p1":4.0,"p2":3.0,"p3":5.0,"inAnalysis":true,"group":"Agree","urgency":[1.0,1.0,2.0,1.0]},{"id":3,"flow":2,"progress":100,"finished":true,"duration":333,"age":36.0,"exp":12.0,"employment":"1","outside":[],"often":1.0,"negOften":1.0,"negAcross":5.0,"p1":1.0,"p2":1.0,"p3":3.0,"inAnalysis":true,"group":"Neutral","urgency":[4.0,5.0,4.0,2.0]},{"id":4,"flow":1,"progress":100,"finished":true,"duration":415,"age":28.0,"exp":6.0,"employment":"1","outside":["2"],"often":2.0,"negOften":1.0,"negAcross":2.0,"p1":2.0,"p2":2.0,"p3":3.0,"inAnalysis":true,"group":"Neutral","urgency":[1.0,1.0,2.0,1.0]},{"id":5,"flow":2,"progress":100,"finished":true,"duration":358,"age":49.0,"exp":25.0,"employment":"1","outside":["2"],"often":2.0,"negOften":2.0,"negAcross":3.0,"p1":2.0,"p2":2.0,"p3":4.0,"inAnalysis":true,"group":"Agree","urgency":[2.0,2.0,3.0,1.0]},{"id":6,"flow":1,"progress":100,"finished":true,"duration":268,"age":30.0,"exp":10.0,"employment":"1","outside":["1","2"],"often":3.0,"negOften":1.0,"negAcross":3.0,"p1":4.0,"p2":1.0,"p3":2.0,"inAnalysis":true,"group":"Disagree","urgency":[3.0,1.0,2.0,3.0]},{"id":7,"flow":2,"progress":100,"finished":true,"duration":698,"age":27.0,"exp":9.0,"employment":"1","outside":["2"],"often":2.0,"negOften":2.0,"negAcross":3.0,"p1":2.0,"p2":2.0,"p3":2.0,"inAnalysis":true,"group":"Disagree","urgency":[1.0,2.0,3.0,1.0]},{"id":8,"flow":2,"progress":100,"finished":true,"duration":298,"age":null,"exp":40.0,"employment":"2","outside":["1","2"],"often":2.0,"negOften":3.0,"negAcross":3.0,"p1":4.0,"p2":4.0,"p3":4.0,"inAnalysis":true,"group":"Agree","urgency":[2.0,1.0,1.0,1.0]},{"id":9,"flow":1,"progress":100,"finished":true,"duration":1039,"age":34.0,"exp":13.0,"employment":"1","outside":["1","2"],"often":1.0,"negOften":1.0,"negAcross":1.0,"p1":1.0,"p2":1.0,"p3":1.0,"inAnalysis":true,"group":"Disagree","urgency":[1.0,1.0,2.0,1.0]},{"id":10,"flow":2,"progress":100,"finished":true,"duration":710,"age":35.0,"exp":12.0,"employment":"1","outside":["1"],"often":5.0,"negOften":2.0,"negAcross":4.0,"p1":2.0,"p2":2.0,"p3":2.0,"inAnalysis":true,"group":"Disagree","urgency":[1.0,1.0,2.0,3.0]},{"id":11,"flow":1,"progress":100,"finished":true,"duration":578,"age":37.0,"exp":20.0,"employment":"1","outside":["1","2","3"],"often":2.0,"negOften":2.0,"negAcross":3.0,"p1":2.0,"p2":2.0,"p3":4.0,"inAnalysis":true,"group":"Agree","urgency":[2.0,1.0,3.0,2.0]},{"id":12,"flow":2,"progress":100,"finished":true,"duration":349,"age":53.0,"exp":25.0,"employment":"1","outside":["2"],"often":3.0,"negOften":1.0,"negAcross":2.0,"p1":2.0,"p2":2.0,"p3":1.0,"inAnalysis":true,"group":"Disagree","urgency":[3.0,3.0,4.0,4.0]},{"id":13,"flow":2,"progress":100,"finished":true,"duration":601,"age":52.0,"exp":41.0,"employment":"1","outside":["6"],"often":2.0,"negOften":1.0,"negAcross":2.0,"p1":1.0,"p2":1.0,"p3":1.0,"inAnalysis":true,"group":"Disagree","urgency":[1.0,1.0,1.0,1.0]},{"id":14,"flow":2,"progress":100,"finished":true,"duration":991,"age":null,"exp":25.0,"employment":"1","outside":["1","2","3","4","5"],"often":1.0,"negOften":1.0,"negAcross":1.0,"p1":1.0,"p2":1.0,"p3":1.0,"inAnalysis":true,"group":"Disagree","urgency":[5.0,4.0,4.0,3.0]},{"id":15,"flow":1,"progress":100,"finished":true,"duration":284,"age":37.0,"exp":18.0,"employment":"1","outside":["1","2"],"often":3.0,"negOften":3.0,"negAcross":3.0,"p1":4.0,"p2":4.0,"p3":2.0,"inAnalysis":true,"group":"Disagree","urgency":[3.0,1.0,3.0,2.0]},{"id":16,"flow":1,"progress":100,"finished":true,"duration":287,"age":48.0,"exp":40.0,"employment":"1","outside":["1","2"],"often":5.0,"negOften":4.0,"negAcross":4.0,"p1":4.0,"p2":4.0,"p3":4.0,"inAnalysis":true,"group":"Agree","urgency":[2.0,1.0,2.0,2.0]},{"id":17,"flow":2,"progress":100,"finished":true,"duration":392,"age":46.0,"exp":35.0,"employment":"1","outside":["2"],"often":3.0,"negOften":3.0,"negAcross":3.0,"p1":3.0,"p2":4.0,"p3":2.0,"inAnalysis":true,"group":"Disagree","urgency":[3.0,3.0,3.0,3.0]},{"id":18,"flow":1,"progress":100,"finished":true,"duration":517,"age":40.0,"exp":26.0,"employment":"1","outside":["1","5"],"often":2.0,"negOften":2.0,"negAcross":2.0,"p1":3.0,"p2":1.0,"p3":2.0,"inAnalysis":true,"group":"Disagree","urgency":[3.0,2.0,1.0,3.0]},{"id":19,"flow":2,"progress":100,"finished":true,"duration":470,"age":26.0,"exp":3.0,"employment":"1","outside":["2"],"often":3.0,"negOften":1.0,"negAcross":2.0,"p1":1.0,"p2":1.0,"p3":5.0,"inAnalysis":true,"group":"Agree","urgency":[2.0,3.0,4.0,2.0]},{"id":20,"flow":1,"progress":100,"finished":true,"duration":965,"age":24.0,"exp":3.0,"employment":"1","outside":["2"],"often":3.0,"negOften":2.0,"negAcross":3.0,"p1":3.0,"p2":3.0,"p3":2.0,"inAnalysis":true,"group":"Disagree","urgency":[2.0,2.0,4.0,4.0]},{"id":21,"flow":2,"progress":100,"finished":true,"duration":563,"age":35.0,"exp":10.0,"employment":"3","outside":["2","5"],"often":2.0,"negOften":2.0,"negAcross":3.0,"p1":2.0,"p2":1.0,"p3":3.0,"inAnalysis":true,"group":"Neutral","urgency":[3.0,2.0,2.0,2.0]},{"id":22,"flow":1,"progress":100,"finished":true,"duration":191,"age":23.0,"exp":5.0,"employment":"1","outside":["2","3","4"],"often":3.0,"negOften":1.0,"negAcross":1.0,"p1":3.0,"p2":2.0,"p3":4.0,"inAnalysis":true,"group":"Agree","urgency":[4.0,1.0,2.0,1.0]},{"id":23,"flow":2,"progress":100,"finished":true,"duration":622,"age":24.0,"exp":4.0,"employment":"4","outside":["1","4"],"often":3.0,"negOften":3.0,"negAcross":2.0,"p1":4.0,"p2":3.0,"p3":4.0,"inAnalysis":true,"group":"Agree","urgency":[3.0,3.0,4.0,3.0]},{"id":24,"flow":1,"progress":100,"finished":true,"duration":386,"age":32.0,"exp":15.0,"employment":"1","outside":["6"],"often":2.0,"negOften":1.0,"negAcross":1.0,"p1":2.0,"p2":3.0,"p3":2.0,"inAnalysis":true,"group":"Disagree","urgency":[2.0,2.0,2.0,3.0]},{"id":25,"flow":2,"progress":100,"finished":true,"duration":649,"age":45.0,"exp":20.0,"employment":"1","outside":["4"],"often":2.0,"negOften":1.0,"negAcross":1.0,"p1":2.0,"p2":1.0,"p3":4.0,"inAnalysis":true,"group":"Agree","urgency":[3.0,4.0,4.0,3.0]},{"id":26,"flow":1,"progress":100,"finished":true,"duration":416,"age":28.0,"exp":9.0,"employment":"4","outside":["2","4"],"often":2.0,"negOften":2.0,"negAcross":3.0,"p1":4.0,"p2":4.0,"p3":5.0,"inAnalysis":true,"group":"Agree","urgency":[4.0,1.0,4.0,2.0]},{"id":27,"flow":1,"progress":100,"finished":true,"duration":554,"age":28.0,"exp":6.0,"employment":"1","outside":["2"],"often":2.0,"negOften":2.0,"negAcross":3.0,"p1":3.0,"p2":2.0,"p3":4.0,"inAnalysis":true,"group":"Agree","urgency":[3.0,1.0,2.0,2.0]},{"id":28,"flow":1,"progress":100,"finished":true,"duration":468,"age":39.0,"exp":28.0,"employment":"1","outside":["1","2"],"often":3.0,"negOften":2.0,"negAcross":3.0,"p1":2.0,"p2":2.0,"p3":4.0,"inAnalysis":true,"group":"Agree","urgency":[3.0,1.0,4.0,1.0]},{"id":29,"flow":1,"progress":100,"finished":true,"duration":644,"age":33.0,"exp":7.0,"employment":"1","outside":["4"],"often":4.0,"negOften":3.0,"negAcross":1.0,"p1":4.0,"p2":3.0,"p3":3.0,"inAnalysis":true,"group":"Neutral","urgency":[2.0,3.0,3.0,4.0]},{"id":30,"flow":2,"progress":100,"finished":true,"duration":442,"age":27.0,"exp":8.0,"employment":"1","outside":["2","3"],"often":2.0,"negOften":1.0,"negAcross":1.0,"p1":1.0,"p2":1.0,"p3":2.0,"inAnalysis":true,"group":"Disagree","urgency":[2.0,3.0,4.0,2.0]},{"id":31,"flow":1,"progress":100,"finished":true,"duration":643,"age":null,"exp":9.0,"employment":"1","outside":["2"],"often":2.0,"negOften":1.0,"negAcross":1.0,"p1":2.0,"p2":1.0,"p3":2.0,"inAnalysis":true,"group":"Disagree","urgency":[2.0,1.0,4.0,2.0]},{"id":32,"flow":2,"progress":53,"finished":false,"duration":344,"age":null,"exp":null,"employment":null,"outside":[],"often":null,"negOften":null,"negAcross":null,"p1":null,"p2":null,"p3":null,"inAnalysis":false,"group":null,"urgency":[null,3.0,null,null]},{"id":33,"flow":1,"progress":100,"finished":true,"duration":138,"age":38.0,"exp":15.0,"employment":"1","outside":["2"],"often":1.0,"negOften":1.0,"negAcross":1.0,"p1":3.0,"p2":3.0,"p3":3.0,"inAnalysis":true,"group":"Neutral","urgency":[2.0,2.0,3.0,2.0]},{"id":34,"flow":1,"progress":100,"finished":true,"duration":961,"age":null,"exp":30.0,"employment":"1","outside":["6"],"often":1.0,"negOften":1.0,"negAcross":2.0,"p1":2.0,"p2":1.0,"p3":2.0,"inAnalysis":true,"group":"Disagree","urgency":[3.0,2.0,2.0,4.0]},{"id":35,"flow":2,"progress":100,"finished":true,"duration":343,"age":35.0,"exp":3.0,"employment":"1","outside":["2"],"often":2.0,"negOften":2.0,"negAcross":3.0,"p1":3.0,"p2":2.0,"p3":2.0,"inAnalysis":true,"group":"Disagree","urgency":[1.0,1.0,1.0,2.0]},{"id":36,"flow":2,"progress":100,"finished":true,"duration":788,"age":24.0,"exp":4.0,"employment":"1","outside":["6"],"often":2.0,"negOften":2.0,"negAcross":3.0,"p1":2.0,"p2":2.0,"p3":4.0,"inAnalysis":true,"group":"Agree","urgency":[2.0,2.0,3.0,3.0]},{"id":37,"flow":2,"progress":100,"finished":true,"duration":594,"age":32.0,"exp":4.0,"employment":"1","outside":["2"],"often":2.0,"negOften":1.0,"negAcross":2.0,"p1":1.0,"p2":1.0,"p3":3.0,"inAnalysis":true,"group":"Neutral","urgency":[3.0,3.0,4.0,3.0]},{"id":38,"flow":1,"progress":100,"finished":true,"duration":829,"age":24.0,"exp":5.0,"employment":"4","outside":["1","2"],"often":2.0,"negOften":4.0,"negAcross":2.0,"p1":4.0,"p2":3.0,"p3":4.0,"inAnalysis":true,"group":"Agree","urgency":[3.0,2.0,2.0,3.0]},{"id":39,"flow":2,"progress":100,"finished":true,"duration":4241,"age":21.0,"exp":3.0,"employment":"4","outside":["1","2","4"],"often":3.0,"negOften":3.0,"negAcross":2.0,"p1":4.0,"p2":2.0,"p3":4.0,"inAnalysis":true,"group":"Agree","urgency":[2.0,2.0,2.0,3.0]},{"id":40,"flow":2,"progress":63,"finished":false,"duration":172,"age":null,"exp":null,"employment":null,"outside":[],"often":null,"negOften":null,"negAcross":null,"p1":null,"p2":null,"p3":null,"inAnalysis":false,"group":null,"urgency":[null,1.0,1.0,null]},{"id":41,"flow":1,"progress":100,"finished":true,"duration":786,"age":24.0,"exp":3.0,"employment":"4","outside":["2","4"],"often":4.0,"negOften":3.0,"negAcross":3.0,"p1":4.0,"p2":2.0,"p3":5.0,"inAnalysis":true,"group":"Agree","urgency":[3.0,1.0,4.0,3.0]},{"id":42,"flow":2,"progress":74,"finished":false,"duration":26,"age":null,"exp":null,"employment":null,"outside":[],"often":null,"negOften":null,"negAcross":null,"p1":null,"p2":null,"p3":null,"inAnalysis":false,"group":null,"urgency":[3.0,null,3.0,2.0]},{"id":43,"flow":2,"progress":100,"finished":true,"duration":434,"age":22.0,"exp":6.0,"employment":"4","outside":["2","4"],"often":1.0,"negOften":1.0,"negAcross":4.0,"p1":2.0,"p2":2.0,"p3":1.0,"inAnalysis":true,"group":"Disagree","urgency":[4.0,3.0,3.0,3.0]},{"id":44,"flow":2,"progress":100,"finished":true,"duration":1576,"age":null,"exp":6.0,"employment":"3","outside":["2"],"often":2.0,"negOften":2.0,"negAcross":3.0,"p1":1.0,"p2":1.0,"p3":4.0,"inAnalysis":true,"group":"Agree","urgency":[2.0,2.0,3.0,4.0]},{"id":45,"flow":1,"progress":100,"finished":true,"duration":16356,"age":42.0,"exp":19.0,"employment":"1","outside":["2"],"often":1.0,"negOften":1.0,"negAcross":2.0,"p1":1.0,"p2":2.0,"p3":2.0,"inAnalysis":true,"group":"Disagree","urgency":[2.0,3.0,2.0,3.0]},{"id":46,"flow":1,"progress":63,"finished":false,"duration":841,"age":null,"exp":null,"employment":null,"outside":[],"often":null,"negOften":null,"negAcross":null,"p1":null,"p2":null,"p3":null,"inAnalysis":false,"group":null,"urgency":[1.0,null,1.0,null]},{"id":47,"flow":2,"progress":53,"finished":false,"duration":1323,"age":null,"exp":null,"employment":null,"outside":[],"often":null,"negOften":null,"negAcross":null,"p1":null,"p2":null,"p3":null,"inAnalysis":false,"group":null,"urgency":[null,2.0,null,null]},{"id":48,"flow":1,"progress":99,"finished":false,"duration":2766,"age":5.0,"exp":120.0,"employment":"7","outside":["6"],"often":1.0,"negOften":1.0,"negAcross":2.0,"p1":3.0,"p2":3.0,"p3":3.0,"inAnalysis":false,"group":"Neutral","urgency":[3.0,1.0,1.0,2.0]},{"id":49,"flow":2,"progress":100,"finished":true,"duration":390,"age":38.0,"exp":20.0,"employment":"1","outside":["2","3"],"often":3.0,"negOften":3.0,"negAcross":3.0,"p1":3.0,"p2":3.0,"p3":4.0,"inAnalysis":true,"group":"Agree","urgency":[1.0,3.0,3.0,4.0]},{"id":50,"flow":1,"progress":100,"finished":true,"duration":1182,"age":24.0,"exp":2.0,"employment":"1","outside":["6"],"often":2.0,"negOften":2.0,"negAcross":2.0,"p1":3.0,"p2":2.0,"p3":3.0,"inAnalysis":true,"group":"Neutral","urgency":[3.0,1.0,4.0,3.0]},{"id":51,"flow":2,"progress":100,"finished":true,"duration":1519,"age":23.0,"exp":5.0,"employment":"4","outside":["4"],"often":4.0,"negOften":4.0,"negAcross":3.0,"p1":3.0,"p2":1.0,"p3":2.0,"inAnalysis":true,"group":"Disagree","urgency":[2.0,1.0,2.0,3.0]},{"id":52,"flow":1,"progress":63,"finished":false,"duration":195,"age":null,"exp":null,"employment":null,"outside":[],"often":null,"negOften":null,"negAcross":null,"p1":null,"p2":null,"p3":null,"inAnalysis":false,"group":null,"urgency":[null,null,2.0,1.0]},{"id":53,"flow":2,"progress":63,"finished":false,"duration":298,"age":null,"exp":null,"employment":null,"outside":[],"often":null,"negOften":null,"negAcross":null,"p1":null,"p2":null,"p3":null,"inAnalysis":false,"group":null,"urgency":[5.0,null,2.0,null]},{"id":54,"flow":2,"progress":99,"finished":false,"duration":273,"age":null,"exp":9.0,"employment":"1","outside":[],"often":3.0,"negOften":2.0,"negAcross":2.0,"p1":3.0,"p2":3.0,"p3":3.0,"inAnalysis":true,"group":"Neutral","urgency":[3.0,3.0,3.0,3.0]},{"id":55,"flow":2,"progress":100,"finished":true,"duration":708,"age":28.0,"exp":4.0,"employment":"1","outside":["2"],"often":2.0,"negOften":2.0,"negAcross":4.0,"p1":3.0,"p2":1.0,"p3":2.0,"inAnalysis":true,"group":"Disagree","urgency":[3.0,3.0,2.0,1.0]},{"id":56,"flow":1,"progress":100,"finished":true,"duration":1736,"age":34.0,"exp":10.0,"employment":"1","outside":["6"],"often":2.0,"negOften":1.0,"negAcross":1.0,"p1":1.0,"p2":1.0,"p3":3.0,"inAnalysis":true,"group":"Neutral","urgency":[2.0,3.0,4.0,3.0]},{"id":57,"flow":1,"progress":100,"finished":true,"duration":348,"age":33.0,"exp":11.0,"employment":"1","outside":["2","4"],"often":1.0,"negOften":2.0,"negAcross":2.0,"p1":2.0,"p2":1.0,"p3":5.0,"inAnalysis":true,"group":"Agree","urgency":[3.0,3.0,4.0,4.0]},{"id":58,"flow":2,"progress":100,"finished":true,"duration":619,"age":24.0,"exp":6.0,"employment":"4","outside":["1","2","3","4"],"often":4.0,"negOften":2.0,"negAcross":4.0,"p1":3.0,"p2":3.0,"p3":5.0,"inAnalysis":true,"group":"Agree","urgency":[3.0,5.0,4.0,3.0]},{"id":59,"flow":1,"progress":63,"finished":false,"duration":375,"age":null,"exp":null,"employment":null,"outside":[],"often":null,"negOften":null,"negAcross":null,"p1":null,"p2":null,"p3":null,"inAnalysis":false,"group":null,"urgency":[2.0,null,3.0,null]},{"id":60,"flow":1,"progress":84,"finished":false,"duration":159,"age":null,"exp":null,"employment":null,"outside":[],"often":null,"negOften":null,"negAcross":null,"p1":null,"p2":null,"p3":null,"inAnalysis":false,"group":null,"urgency":[4.0,2.0,2.0,2.0]},{"id":61,"flow":1,"progress":100,"finished":true,"duration":586,"age":49.0,"exp":34.0,"employment":"1","outside":["2"],"often":1.0,"negOften":1.0,"negAcross":2.0,"p1":2.0,"p2":2.0,"p3":2.0,"inAnalysis":true,"group":"Disagree","urgency":[1.0,1.0,1.0,1.0]},{"id":62,"flow":2,"progress":100,"finished":true,"duration":453,"age":35.0,"exp":15.0,"employment":"1","outside":["6"],"often":2.0,"negOften":2.0,"negAcross":3.0,"p1":4.0,"p2":4.0,"p3":4.0,"inAnalysis":true,"group":"Agree","urgency":[1.0,2.0,2.0,1.0]},{"id":63,"flow":1,"progress":100,"finished":true,"duration":412,"age":30.0,"exp":13.0,"employment":"1","outside":["2","4","5"],"often":4.0,"negOften":2.0,"negAcross":3.0,"p1":3.0,"p2":3.0,"p3":2.0,"inAnalysis":true,"group":"Disagree","urgency":[1.0,2.0,3.0,1.0]},{"id":64,"flow":1,"progress":43,"finished":false,"duration":7,"age":null,"exp":null,"employment":null,"outside":[],"often":null,"negOften":null,"negAcross":null,"p1":null,"p2":null,"p3":null,"inAnalysis":false,"group":null,"urgency":[null,null,null,null]},{"id":65,"flow":1,"progress":100,"finished":true,"duration":269,"age":47.0,"exp":25.0,"employment":"3","outside":["1","3"],"often":3.0,"negOften":3.0,"negAcross":2.0,"p1":3.0,"p2":3.0,"p3":3.0,"inAnalysis":true,"group":"Neutral","urgency":[2.0,2.0,4.0,2.0]},{"id":66,"flow":2,"progress":100,"finished":true,"duration":352,"age":45.0,"exp":25.0,"employment":"2","outside":["1","2"],"often":3.0,"negOften":3.0,"negAcross":3.0,"p1":4.0,"p2":4.0,"p3":4.0,"inAnalysis":true,"group":"Agree","urgency":[3.0,3.0,1.0,2.0]},{"id":67,"flow":1,"progress":100,"finished":true,"duration":7836,"age":43.0,"exp":20.0,"employment":"3","outside":["2"],"often":2.0,"negOften":1.0,"negAcross":1.0,"p1":3.0,"p2":1.0,"p3":2.0,"inAnalysis":true,"group":"Disagree","urgency":[2.0,2.0,3.0,2.0]},{"id":68,"flow":2,"progress":100,"finished":true,"duration":299,"age":36.0,"exp":15.0,"employment":"1","outside":["1","2"],"often":3.0,"negOften":3.0,"negAcross":4.0,"p1":4.0,"p2":2.0,"p3":2.0,"inAnalysis":true,"group":"Disagree","urgency":[2.0,2.0,3.0,1.0]},{"id":69,"flow":2,"progress":100,"finished":true,"duration":520,"age":59.0,"exp":45.0,"employment":"1","outside":["2"],"often":4.0,"negOften":3.0,"negAcross":5.0,"p1":4.0,"p2":1.0,"p3":3.0,"inAnalysis":true,"group":"Neutral","urgency":[3.0,2.0,1.0,2.0]},{"id":70,"flow":1,"progress":100,"finished":true,"duration":353,"age":39.0,"exp":15.0,"employment":"1","outside":["1","2"],"often":3.0,"negOften":2.0,"negAcross":4.0,"p1":2.0,"p2":2.0,"p3":1.0,"inAnalysis":true,"group":"Disagree","urgency":[2.0,1.0,2.0,2.0]},{"id":71,"flow":1,"progress":100,"finished":true,"duration":1161,"age":45.0,"exp":20.0,"employment":"1","outside":["2"],"often":2.0,"negOften":1.0,"negAcross":2.0,"p1":2.0,"p2":1.0,"p3":1.0,"inAnalysis":true,"group":"Disagree","urgency":[1.0,1.0,2.0,1.0]},{"id":72,"flow":2,"progress":53,"finished":false,"duration":113,"age":null,"exp":null,"employment":null,"outside":[],"often":null,"negOften":null,"negAcross":null,"p1":null,"p2":null,"p3":null,"inAnalysis":false,"group":null,"urgency":[null,1.0,null,null]},{"id":73,"flow":1,"progress":53,"finished":false,"duration":3387,"age":null,"exp":null,"employment":null,"outside":[],"often":null,"negOften":null,"negAcross":null,"p1":null,"p2":null,"p3":null,"inAnalysis":false,"group":null,"urgency":[2.0,null,null,null]},{"id":74,"flow":2,"progress":91,"finished":false,"duration":127,"age":null,"exp":null,"employment":null,"outside":[],"often":3.0,"negOften":3.0,"negAcross":3.0,"p1":3.0,"p2":3.0,"p3":3.0,"inAnalysis":false,"group":"Neutral","urgency":[2.0,3.0,2.0,3.0]},{"id":75,"flow":2,"progress":74,"finished":false,"duration":957,"age":null,"exp":null,"employment":null,"outside":[],"often":null,"negOften":null,"negAcross":null,"p1":null,"p2":null,"p3":null,"inAnalysis":false,"group":null,"urgency":[3.0,null,2.0,2.0]}],"contrasts":{"original|posterior|1":[295,2805,10598,20797,28428,21718,11777,3236,346],"original|posterior|2":[339,3239,11015,20751,26925,21730,11992,3621,388],"original|posterior|3":[174,1729,7055,16139,25996,25614,16854,5813,626],"original|prior|1":[2460,5550,9882,14181,35244,14410,9845,5774,2654],"original|prior|2":[2437,5909,9592,13939,36614,13779,9378,6019,2333],"original|prior|3":[2507,5899,9802,14275,35207,13963,9891,5816,2640],"rerun|posterior|1":[262,2741,10072,20973,28936,21951,11558,3165,342],"rerun|posterior|2":[325,3243,11239,21092,26694,21612,11888,3529,378],"rerun|posterior|3":[164,1661,7014,16345,26145,25511,16789,5741,630],"rerun|prior|1":[2599,5769,9401,14022,36064,14181,9654,5864,2446],"rerun|prior|2":[2542,6176,9499,14149,36210,13884,9127,5925,2488],"rerun|prior|3":[2528,5898,9926,14384,35508,13992,9758,5682,2324]},"density":{"lo":-3.0,"step":0.1,"series":{"posterior|Disagree":{"n":4000,"density":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0025,0.024999999999999998,0.0425,0.09499999999999999,0.18999999999999997,0.32,0.49,0.7249999999999999,0.8749999999999999,1.005,1.255,1.265,1.045,0.9325,0.655,0.46499999999999997,0.34,0.1625,0.05499999999999999,0.03,0.02,0.005,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"pPos":0.623},"posterior|No Opinion":{"n":4000,"density":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0025,0.0,0.0075,0.0075,0.022499999999999996,0.022499999999999996,0.0725,0.08,0.13249999999999998,0.2425,0.3325,0.4275,0.5825,0.7074999999999999,0.8949999999999999,0.8849999999999999,0.9049999999999999,0.985,0.9275,0.7274999999999999,0.595,0.47,0.34500000000000003,0.25499999999999995,0.1475,0.085,0.0725,0.032499999999999994,0.012499999999999999,0.0075,0.0025,0.0025,0.0075,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"pPos":0.558},"posterior|Agree":{"n":4000,"density":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.01,0.012499999999999999,0.022499999999999996,0.0425,0.105,0.21,0.35000000000000003,0.57,0.635,0.8425,0.945,1.255,1.13,1.0499999999999998,0.9125,0.6625,0.5249999999999999,0.3375,0.19499999999999998,0.0825,0.0625,0.03,0.012499999999999999,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"pPos":0.99125},"prior|Disagree":{"n":1000,"density":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.01,0.01,0.0,0.01,0.02,0.01,0.02,0.04,0.06999999999999999,0.06999999999999999,0.13999999999999999,0.19999999999999998,0.18999999999999997,0.15,0.32,0.27999999999999997,0.34,0.47,0.49,0.5499999999999999,0.5,0.5299999999999999,0.49,0.5499999999999999,0.6,0.57,0.37999999999999995,0.42999999999999994,0.43999999999999995,0.35000000000000003,0.35000000000000003,0.29,0.32,0.10999999999999999,0.17,0.10999999999999999,0.12999999999999998,0.08,0.049999999999999996,0.03,0.03,0.01,0.049999999999999996,0.0,0.02,0.01,0.01,0.0,0.0,0.0,0.0,0.0,0.0],"pPos":0.509},"prior|No Opinion":{"n":1000,"density":[0.0,0.0,0.0,0.0,0.0,0.01,0.0,0.01,0.01,0.01,0.01,0.03,0.06,0.06,0.049999999999999996,0.06,0.09999999999999999,0.10999999999999999,0.19999999999999998,0.15,0.21,0.33,0.25,0.45999999999999996,0.48,0.38999999999999996,0.5099999999999999,0.5099999999999999,0.64,0.45999999999999996,0.59,0.47,0.43999999999999995,0.44999999999999996,0.5299999999999999,0.33,0.42999999999999994,0.41,0.26999999999999996,0.22999999999999998,0.19999999999999998,0.17999999999999997,0.12999999999999998,0.06,0.04,0.049999999999999996,0.02,0.0,0.03,0.01,0.01,0.0,0.0,0.0,0.01,0.0,0.0,0.0,0.0,0.0],"pPos":0.489},"prior|Agree":{"n":1000,"density":[0.0,0.0,0.0,0.0,0.0,0.01,0.0,0.0,0.0,0.0,0.01,0.02,0.03,0.01,0.04,0.08999999999999998,0.06999999999999999,0.12,0.18999999999999997,0.16,0.16,0.32,0.3,0.41,0.34,0.39999999999999997,0.42,0.5399999999999999,0.6900000000000001,0.7000000000000001,0.57,0.57,0.5199999999999999,0.5,0.47,0.5,0.42,0.31,0.17,0.16,0.18999999999999997,0.12999999999999998,0.12,0.09999999999999999,0.08,0.03,0.049999999999999996,0.04,0.03,0.0,0.01,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"pPos":0.497}}},"summary":[{"group":"Disagree","mean":"0.0939841661604248","sd":"0.324812601473149","pi89_low":"-0.4389258501","pi89_high":"0.619663257","prob_positive":"0.623","evid_ratio":"1.6525198938992","evidence":"Anecdotal for"},{"group":"No Opinion","mean":"0.0580195349856725","sd":"0.419957138387023","pi89_low":"-0.62063426","pi89_high":"0.733780979","prob_positive":"0.558","evid_ratio":"1.26244343891403","evidence":"Anecdotal for"},{"group":"Agree","mean":"0.79973127893622","sd":"0.3438837024571","pi89_low":"0.237961871265","pi89_high":"1.34453790595","prob_positive":"0.99125","evid_ratio":"113.285714285714","evidence":"Strong for"}],"precis":[{"parameter":"sentiment[1,1]","mean":"-0.349765103992795","sd":"0.294909034300194","X5.5.":"-0.81876989315","X94.5.":"0.12587288085","rhat":"1.00118893167582","ess_bulk":"2862.70239929948"},{"parameter":"sentiment[2,1]","mean":"-0.25578093783237","sd":"0.294500689517199","X5.5.":"-0.73754199125","X94.5.":"0.20812105915","rhat":"1.00003261076016","ess_bulk":"2759.55649144716"},{"parameter":"sentiment[1,2]","mean":"0.180534512897948","sd":"0.335278023106741","X5.5.":"-0.3544151375","X94.5.":"0.70003267475","rhat":"1.00007071309022","ess_bulk":"3251.03924711827"},{"parameter":"sentiment[2,2]","mean":"0.23855404788362","sd":"0.319153089528894","X5.5.":"-0.2722786438","X94.5.":"0.74882459595","rhat":"1.00001453290601","ess_bulk":"3497.59584258067"},{"parameter":"sentiment[1,3]","mean":"-0.45194410477171","sd":"0.302083214427529","X5.5.":"-0.933582973","X94.5.":"0.0376545750550001","rhat":"1.00098123272237","ess_bulk":"2738.40209109583"},{"parameter":"sentiment[2,3]","mean":"0.34778717416451","sd":"0.297393460856025","X5.5.":"-0.1260262102","X94.5.":"0.8258771718","rhat":"1.00114639788212","ess_bulk":"2677.27569539457"},{"parameter":"constructed[1]","mean":"-0.339266725698692","sd":"0.358866640871988","X5.5.":"-0.9339428942","X94.5.":"0.22418028595","rhat":"1.00140240053093","ess_bulk":"1716.86142607211"},{"parameter":"constructed[2]","mean":"0.0685495010736175","sd":"0.356077793594978","X5.5.":"-0.5134836356","X94.5.":"0.642351349","rhat":"1.0018683945487","ess_bulk":"1827.2280117666"},{"parameter":"experience","mean":"-0.293794557602522","sd":"0.121162014687694","X5.5.":"-0.48780872425","X94.5.":"-0.100755143","rhat":"1.00105152997765","ess_bulk":"4094.75355790267"},{"parameter":"cutpoints[1]","mean":"-1.47647139781525","sd":"0.41627077171331","X5.5.":"-2.162026864","X94.5.":"-0.8122249229","rhat":"1.00205652312998","ess_bulk":"1615.26420055089"},{"parameter":"cutpoints[2]","mean":"-0.00041116724210625","sd":"0.404046097543393","X5.5.":"-0.6513183112","X94.5.":"0.64711431255","rhat":"1.00108365974949","ess_bulk":"1639.21968521172"},{"parameter":"cutpoints[3]","mean":"1.611876154835","sd":"0.420136247549269","X5.5.":"0.934229769","X94.5.":"2.2616538985","rhat":"1.00137221440594","ess_bulk":"1810.03463321253"},{"parameter":"cutpoints[4]","mean":"4.0851191949","sd":"0.63296537971424","X5.5.":"3.103799791","X94.5.":"5.126638609","rhat":"1.00100553937982","ess_bulk":"2815.14649589817"}],"questions":{"perception-qs_1":"While writing a comment describing an issue in the source-code, I am more likely to write negative comments for issues that I believe are more important.","perception-qs_2":"Writing negative comments to assign extra priority to issues in the source-code is an acceptable practice.","perception-qs_3":"Whenever I come across a source-code comment describing a problem that is particularly negative, I interpret this as a more important issue than a source-code comment describing a problem that is more neutral.","often":"When writing source code, how often do you write\nsource code comments indicating delayed or intended work activities such as TODO, FIXME, hack,\nworkaround, etc.?","negative-often":"When authoring comments that describe a problem, how often do you write negative source-code comments indicating delayed or intended work activities such as TODO, FIXME, hack, workaround, etc.?","neg-across":"How often do you come across negative source-code\ncomments indicating delayed or intended work activities such as TODO, FIXME, hack, workaround, etc.?"}};
+const GROUPS = ['All', 'Agree', 'Neutral', 'Disagree'];
+const GNAME = { Agree: 'Agree', Neutral: 'No opinion', Disagree: 'Disagree' };
+const MODEL_GROUPS = [{ j: 3, key: 'Agree', name: 'Agree' }, { j: 2, key: 'No Opinion', name: 'No opinion' }, { j: 1, key: 'Disagree', name: 'Disagree' }];
+const state = { sample: 'analysis', group: 'All', compare: 'prior' };
+try { Object.assign(state, JSON.parse(localStorage.getItem('dashSaifU') || '{}')); } catch (e) {}
+
+const NS = 'http://www.w3.org/2000/svg';
+function S(tag, attrs, parent) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+const fmt = (v, d = 2) => v == null || isNaN(v) ? '–' : (+v).toFixed(d);
+const sgn = (v, d = 2) => v == null || isNaN(v) ? '–' : (v > 0 ? '+' : '') + (+v).toFixed(d);
+const pct = (v, d = 0) => v == null || isNaN(v) ? '–' : (v * 100).toFixed(d) + '%';
+const mean = a => a.length ? a.reduce((x, y) => x + y, 0) / a.length : NaN;
+const median = a => { if (!a.length) return NaN; const s = [...a].sort((x, y) => x - y), m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; };
+const isNeg = (flow, v) => flow === 1 ? (v === 1 || v === 3) : (v === 2 || v === 4);
+
+const tip = document.getElementById('tip');
+function showTip(ev, title, lines) {
+  tip.innerHTML = '<div class="t">' + title + '</div>' + lines.map(l => '<div class="m">' + l + '</div>').join('');
+  tip.style.opacity = 1;
+  const w = tip.offsetWidth, h = tip.offsetHeight;
+  let x = ev.clientX + 14, y = ev.clientY + 14;
+  if (x + w > innerWidth - 8) x = ev.clientX - w - 14;
+  if (y + h > innerHeight - 8) y = ev.clientY - h - 14;
+  tip.style.left = Math.max(8, x) + 'px'; tip.style.top = Math.max(8, y) + 'px';
+}
+function hideTip() { tip.style.opacity = 0; }
+function bindTip(node, title, lines) {
+  node.addEventListener('mousemove', ev => showTip(ev, typeof title === 'function' ? title(ev) : title, typeof lines === 'function' ? lines(ev) : lines));
+  node.addEventListener('mouseleave', hideTip);
+}
+function inSample(r) { return state.sample === 'all' || r.inAnalysis; }
+function filtered() { return DATA.responses.filter(r => inSample(r) && (state.group === 'All' || r.group === state.group)); }
+
+function niceMax(v, steps = 4) { const m = Math.max(steps, Math.ceil(v / steps) * steps); return m; }
+function vbars(el, cats, opt) {
+  el.innerHTML = '';
+  const W = Math.max(260, el.clientWidth), H = opt.height || 220;
+  const m = { t: 18, r: 8, b: opt.xTitle ? 40 : 26, l: 34 };
+  const svg = S('svg', { width: W, height: H, role: 'img', 'aria-label': opt.aria || '' }, el);
+  const iw = W - m.l - m.r, ih = H - m.t - m.b, yMax = opt.yMax;
+  const y = v => m.t + ih - v / yMax * ih;
+  opt.yTicks.forEach(t => {
+    S('line', { x1: m.l, x2: W - m.r, y1: y(t), y2: y(t), stroke: t === 0 ? 'var(--axis)' : 'var(--grid)' }, svg);
+    S('text', { x: m.l - 6, y: y(t) + 4, 'text-anchor': 'end', class: 'tick' }, svg).textContent = t;
+  });
+  const band = iw / cats.length, nb = Math.max(...cats.map(c => c.bars.length));
+  const bw = Math.min(opt.maxBar || 44, (band - band * (opt.pad != null ? opt.pad : 0.22)) / nb);
+  cats.forEach((c, i) => {
+    const gx = m.l + i * band + (band - bw * nb) / 2;
+    c.bars.forEach((b, k) => {
+      const x = gx + k * bw + 1, w = bw - 2;
+      if (b.value > 0) {
+        const top = y(b.value), base = y(0), r = Math.min(4, w / 2, base - top);
+        S('path', { d: `M${x},${base}V${top + r}Q${x},${top} ${x + r},${top}H${x + w - r}Q${x + w},${top} ${x + w},${top + r}V${base}Z`, fill: b.color }, svg);
+        if (b.label) S('text', { x: x + w / 2, y: top - 5, 'text-anchor': 'middle', class: 'val' }, svg).textContent = b.label;
+      }
+      bindTip(S('rect', { x: gx + k * bw, y: m.t, width: bw, height: ih, class: 'hit' }, svg), b.title, b.lines);
+    });
+    S('text', { x: m.l + i * band + band / 2, y: m.t + ih + 16, 'text-anchor': 'middle', class: 'tick' }, svg).textContent = c.label;
+  });
+  if (opt.xTitle) S('text', { x: m.l + iw / 2, y: H - 4, 'text-anchor': 'middle', class: 'lbl' }, svg).textContent = opt.xTitle;
+}
+function hstack(el, rows, opt = {}) {
+  el.innerHTML = '';
+  const W = Math.max(260, el.clientWidth), lw = opt.labelW != null ? opt.labelW : 86, rh = 26, gap = 12;
+  const svg = S('svg', { width: W, height: rows.length * (rh + gap) + 4 }, el);
+  rows.forEach((row, i) => {
+    const tot = row.parts.reduce((a, p) => a + p.count, 0), y0 = i * (rh + gap) + 2, iw = W - lw - 40;
+    if (lw) S('text', { x: 0, y: y0 + rh / 2 + 4, class: 'lbl' }, svg).textContent = row.label;
+    let x = lw;
+    row.parts.forEach(p => {
+      const w = tot ? p.count / tot * iw : 0;
+      if (w > 0) {
+        bindTip(S('rect', { x: x + 1, y: y0, width: Math.max(0, w - 2), height: rh, rx: 3, fill: p.color }, svg), (row.tipLabel || row.label) + ' · ' + p.name, [p.count + ' of ' + tot + ' (' + pct(p.count / tot) + ')']);
+        if (w > 30) S('text', { x: x + w / 2, y: y0 + rh / 2 + 4, 'text-anchor': 'middle', class: 'val', style: 'pointer-events:none;fill:' + (p.ink || 'var(--ink)') }, svg).textContent = pct(p.count / tot);
+      }
+      x += w;
+    });
+    S('text', { x: W - 2, y: y0 + rh / 2 + 4, 'text-anchor': 'end', class: 'tick' }, svg).textContent = 'n=' + tot;
+  });
+}
+function legend(el, items) { el.innerHTML = items.map(i => `<span><i class="sw${i.line ? ' line' : ''}" style="background:${i.color}"></i>${i.name}</span>`).join(''); }
+
+const ORD = ['var(--o1)', 'var(--o2)', 'var(--o3)', 'var(--o4)', 'var(--o5)'];
+const ORD_INK = ['var(--ink)', 'var(--ink)', '#fff', '#fff', '#fff'];
+const LIK = ['var(--d1)', 'var(--d2)', 'var(--mid)', 'var(--d4)', 'var(--d5)'];
+const LIK_NAMES = ['1 Strongly disagree', '2 Disagree', '3 Neutral', '4 Agree', '5 Strongly agree'];
+
+function split(rs) {
+  const neg = [], neu = [], byV = [1, 2, 3, 4].map(() => ({ neg: [], neu: [] }));
+  rs.forEach(r => r.urgency.forEach((v, i) => { if (v == null) return; const n = isNeg(r.flow, i + 1); (n ? neg : neu).push(v); byV[i][n ? 'neg' : 'neu'].push(v); }));
+  return { neg, neu, byV };
+}
+function diffs(rs) {
+  const out = [];
+  rs.forEach(r => { const a = [], b = []; r.urgency.forEach((v, i) => { if (v != null) (isNeg(r.flow, i + 1) ? a : b).push(v); }); if (a.length === 2 && b.length === 2) out.push(mean(a) - mean(b)); });
+  return out;
+}
+
+// ---------- verdicts ----------
+function renderVerdicts() {
+  const sum = Object.fromEntries(DATA.summary.map(s => [s.group, s]));
+  const lo = -1.5, hi = 1.5;
+  document.getElementById('verdicts').innerHTML = '';
+  // build all cards first so each interval bar measures its final grid-cell width
+  const cards = MODEL_GROUPS.filter(g => sum[g.key]).map(g => {
+    const s = sum[g.key];
+    const div = document.createElement('div'); div.className = 'verdict';
+    div.innerHTML = `<div class="g">Belief group: ${g.name}</div><div class="ev">${s.evidence}</div>
+      <div class="d">Effect <b>${sgn(+s.mean)}</b> log-odds (89% interval ${sgn(+s.pi89_low)} to ${sgn(+s.pi89_high)})<br>
+      Probability the effect is positive: <b>${pct(+s.prob_positive)}</b> · evidence ratio ${fmt(+s.evid_ratio, 1)}</div><div class="bar-pi"></div>`;
+    document.getElementById('verdicts').appendChild(div);
+    return { s, div };
+  });
+  cards.forEach(({ s, div }) => {
+    const el = div.querySelector('.bar-pi'), W = Math.max(200, el.clientWidth), H = 34;
+    const x = v => 6 + (Math.max(lo, Math.min(hi, v)) - lo) / (hi - lo) * (W - 12);
+    const svg = S('svg', { width: W, height: H, role: 'img', 'aria-label': '89% interval' }, el);
+    S('line', { x1: 6, x2: W - 6, y1: 12, y2: 12, stroke: 'var(--grid)', 'stroke-width': 2 }, svg);
+    S('line', { x1: x(0), x2: x(0), y1: 2, y2: 22, stroke: 'var(--axis)', 'stroke-width': 1 }, svg);
+    S('line', { x1: x(+s.pi89_low), x2: x(+s.pi89_high), y1: 12, y2: 12, stroke: 'var(--neutral)', 'stroke-width': 4, 'stroke-linecap': 'round' }, svg);
+    S('circle', { cx: x(+s.mean), cy: 12, r: 5, fill: 'var(--neutral)', stroke: 'var(--surface)', 'stroke-width': 2 }, svg);
+    S('text', { x: 6, y: 32, class: 'tick' }, svg).textContent = 'less urgent';
+    S('text', { x: x(0), y: 32, class: 'tick', 'text-anchor': 'middle' }, svg).textContent = '0';
+    S('text', { x: W - 6, y: 32, class: 'tick', 'text-anchor': 'end' }, svg).textContent = 'more urgent';
+  });
+}
+
+// ---------- survey ----------
+function renderSurvey(rs) {
+  const R = split(rs), d = diffs(rs), hi = a => a.filter(x => x >= 4).length / (a.length || 1);
+  const tiles = [
+    ['Participants', rs.length, (state.sample === 'analysis' ? 'analysis sample' : 'all non-pilot') + (state.group !== 'All' ? ' · ' + GNAME[state.group] : '')],
+    ['Mean urgency, negative', fmt(mean(R.neg)), R.neg.length + ' ratings'],
+    ['Mean urgency, neutral', fmt(mean(R.neu)), R.neu.length + ' ratings'],
+    ['Difference', sgn(mean(R.neg) - mean(R.neu)), 'negative minus neutral'],
+    ['Rated 4–5 (urgent)', pct(hi(R.neg)) + ' vs ' + pct(hi(R.neu)), 'negative vs neutral'],
+    ['Negative rated higher', d.filter(x => x > 0).length + ' / ' + d.length, 'participants'],
+  ];
+  document.getElementById('tiles').innerHTML = tiles.map(t => `<div class="tile"><div class="k">${t[0]}</div><div class="v">${t[1]}</div><div class="s">${t[2]}</div></div>`).join('');
+
+  const sd = a => { const m = mean(a); return Math.sqrt(mean(a.map(x => (x - m) ** 2))); };
+  vbars(document.getElementById('c-means'), R.byV.map((v, i) => ({
+    label: 'Comment ' + (i + 1), bars: [
+      { value: mean(v.neg), color: 'var(--negative)', label: fmt(mean(v.neg), 1), title: 'Comment ' + (i + 1) + ' · negative', lines: ['Mean ' + fmt(mean(v.neg)) + ' (sd ' + fmt(sd(v.neg)) + ')', 'n = ' + v.neg.length] },
+      { value: mean(v.neu), color: 'var(--neutral)', label: fmt(mean(v.neu), 1), title: 'Comment ' + (i + 1) + ' · neutral', lines: ['Mean ' + fmt(mean(v.neu)) + ' (sd ' + fmt(sd(v.neu)) + ')', 'n = ' + v.neu.length] }]
+  })), { yMax: 5, yTicks: [0, 1, 2, 3, 4, 5], height: 240 });
+
+  const base = DATA.responses.filter(inSample);
+  vbars(document.getElementById('c-groups'), ['Agree', 'Neutral', 'Disagree'].map(g => {
+    const G = split(base.filter(r => r.group === g)), n = base.filter(r => r.group === g).length;
+    return { label: GNAME[g] + ' (n=' + n + ')', bars: [
+      { value: mean(G.neg), color: 'var(--negative)', label: fmt(mean(G.neg)), title: GNAME[g] + ' · negative', lines: ['Mean ' + fmt(mean(G.neg)), G.neg.length + ' ratings'] },
+      { value: mean(G.neu), color: 'var(--neutral)', label: fmt(mean(G.neu)), title: GNAME[g] + ' · neutral', lines: ['Mean ' + fmt(mean(G.neu)), G.neu.length + ' ratings', 'Difference ' + sgn(mean(G.neg) - mean(G.neu))] }] };
+  }), { yMax: 5, yTicks: [0, 1, 2, 3, 4, 5], height: 240, maxBar: 52 });
+
+  const parts = a => [1, 2, 3, 4, 5].map((s, i) => ({ name: 'score ' + s, count: a.filter(x => x === s).length, color: ORD[i], ink: ORD_INK[i] }));
+  legend(document.getElementById('lg-dist'), [1, 2, 3, 4, 5].map((s, i) => ({ name: s + (s === 1 ? ' (not urgent)' : s === 5 ? ' (very urgent)' : ''), color: ORD[i] })));
+  hstack(document.getElementById('c-dist'), [{ label: 'Negative', parts: parts(R.neg) }, { label: 'Neutral', parts: parts(R.neu) }]);
+  document.getElementById('co-dist').innerHTML = `Rated 4 or 5: <b>${pct(hi(R.neg))}</b> of negative vs <b>${pct(hi(R.neu))}</b> of neutral ratings. Rated 1: <b>${pct(R.neg.filter(x => x === 1).length / (R.neg.length || 1))}</b> vs <b>${pct(R.neu.filter(x => x === 1).length / (R.neu.length || 1))}</b>.`;
+
+  const bins = []; for (let b = -3; b <= 3.001; b += 0.5) bins.push(b);
+  const counts = bins.map(b => d.filter(x => Math.abs(Math.max(-3, Math.min(3, x)) - b) < 1e-9).length);
+  const yMax = niceMax(Math.max(...counts));
+  vbars(document.getElementById('c-diff'), bins.map((b, i) => ({
+    label: b === Math.round(b) ? (b > 0 ? '+' : '') + b : '',
+    bars: [{ value: counts[i], color: b > 0 ? 'var(--negative)' : b < 0 ? 'var(--neutral)' : 'var(--zero)', title: 'Difference ' + (b > 0 ? '+' : '') + b, lines: [counts[i] + ' participant' + (counts[i] === 1 ? '' : 's')] }]
+  })), { yMax, yTicks: [0, yMax / 4, yMax / 2, 3 * yMax / 4, yMax], pad: 0.12, maxBar: 40, xTitle: 'Urgency points (negative minus neutral)', height: 230 });
+  document.getElementById('co-diff').innerHTML = `Of ${d.length} participants: <b>${d.filter(x => x > 0).length}</b> found the negative comments more urgent, <b>${d.filter(x => x === 0).length}</b> rated them the same, and <b>${d.filter(x => x < 0).length}</b> found the neutral comments more urgent. Mean <b>${sgn(mean(d))}</b>.`;
+}
+
+// ---------- model ----------
+function stats(c) {
+  const tot = c.reduce((a, b) => a + b, 0), vals = [-4, -3, -2, -1, 0, 1, 2, 3, 4];
+  return { tot, up: c.slice(5).reduce((a, b) => a + b, 0) / tot, eq: c[4] / tot, dn: c.slice(0, 4).reduce((a, b) => a + b, 0) / tot, mn: c.reduce((a, x, i) => a + x * vals[i], 0) / tot };
+}
+function renderDensities() {
+  const host = document.getElementById('c-dens'); host.innerHTML = '';
+  const D = DATA.density, sum = Object.fromEntries(DATA.summary.map(s => [s.group, s]));
+  const cards = MODEL_GROUPS.map(g => {
+    const card = document.createElement('div'); card.className = 'card';
+    card.innerHTML = `<h3>Model effect · ${g.name}</h3><p class="sub">Change in urgency log-odds from negative wording</p><div class="chart"></div>`;
+    host.appendChild(card); return { g, card };
+  });
+  cards.forEach(({ g, card }) => {
+    const post = D.series['posterior|' + g.key], prior = D.series['prior|' + g.key];
+    const el = card.querySelector('.chart'), W = Math.max(220, el.clientWidth), H = 190, m = { t: 10, r: 8, b: 34, l: 8 };
+    const svg = S('svg', { width: W, height: H, role: 'img', 'aria-label': 'Posterior density' }, el);
+    const n = post.density.length, iw = W - m.l - m.r, ih = H - m.t - m.b;
+    const yMax = Math.max(...post.density, ...prior.density) * 1.08;
+    const xv = i => D.lo + (i + 0.5) * D.step, X = v => m.l + (v - D.lo) / (n * D.step) * iw, Y = v => m.t + ih - v / yMax * ih;
+    S('line', { x1: m.l, x2: W - m.r, y1: Y(0), y2: Y(0), stroke: 'var(--axis)' }, svg);
+    [-3, -2, -1, 0, 1, 2, 3].forEach(t => S('text', { x: X(t), y: m.t + ih + 15, 'text-anchor': 'middle', class: 'tick' }, svg).textContent = (t > 0 ? '+' : '') + t);
+    let area = `M${X(xv(0))},${Y(0)}`, line = '', pl = '';
+    post.density.forEach((v, i) => { area += `L${X(xv(i))},${Y(v)}`; line += (i ? 'L' : 'M') + X(xv(i)) + ',' + Y(v); });
+    prior.density.forEach((v, i) => { pl += (i ? 'L' : 'M') + X(xv(i)) + ',' + Y(v); });
+    area += `L${X(xv(n - 1))},${Y(0)}Z`;
+    S('path', { d: area, fill: 'var(--neutral)', opacity: 0.18 }, svg);
+    S('path', { d: line, fill: 'none', stroke: 'var(--neutral)', 'stroke-width': 2 }, svg);
+    S('path', { d: pl, fill: 'none', stroke: 'var(--prior)', 'stroke-width': 1.5, opacity: 0.8 }, svg);
+    S('line', { x1: X(0), x2: X(0), y1: m.t, y2: Y(0), stroke: 'var(--ink-2)', 'stroke-width': 1, opacity: 0.6 }, svg);
+    const s = sum[g.key];
+    if (s) S('text', { x: W - m.r, y: m.t + 12, 'text-anchor': 'end', class: 'val' }, svg).textContent = pct(+s.prob_positive) + ' > 0';
+    S('text', { x: m.l + iw / 2, y: H - 2, 'text-anchor': 'middle', class: 'lbl' }, svg).textContent = '← less urgent · more urgent →';
+    const cross = S('line', { x1: 0, x2: 0, y1: m.t, y2: Y(0), stroke: 'var(--ink)', 'stroke-width': 1, opacity: 0 }, svg);
+    const hit = S('rect', { x: m.l, y: m.t, width: iw, height: ih, class: 'hit' }, svg);
+    const idx = ev => { const r = svg.getBoundingClientRect(); return Math.max(0, Math.min(n - 1, Math.floor((ev.clientX - r.left - m.l) / iw * n))); };
+    bindTip(hit, ev => 'Effect ≈ ' + sgn(xv(idx(ev)), 1), ev => { const i = idx(ev); cross.setAttribute('x1', X(xv(i))); cross.setAttribute('x2', X(xv(i))); cross.setAttribute('opacity', 0.35); return ['Posterior density ' + fmt(post.density[i]), 'Prior density ' + fmt(prior.density[i])]; });
+    hit.addEventListener('mouseleave', () => cross.setAttribute('opacity', 0));
+  });
+}
+function renderSim() {
+  const cmp = state.compare, host = document.getElementById('c-sim'); host.innerHTML = '';
+  legend(document.getElementById('lg-sim'), [{ name: 'Re-run: simulated urgency difference', color: 'var(--neutral)' }, { name: cmp === 'prior' ? 'Prior (before data)' : 'Original authors’ run', color: cmp === 'prior' ? 'var(--prior)' : 'var(--orig)', line: true }]);
+  const cards = MODEL_GROUPS.map(g => {
+    const card = document.createElement('div'); card.className = 'card'; host.appendChild(card); return { g, card };
+  });
+  cards.forEach(({ g, card }) => {
+    const post = DATA.contrasts['rerun|posterior|' + g.j], other = DATA.contrasts[(cmp === 'prior' ? 'rerun|prior|' : 'original|posterior|') + g.j];
+    const ps = stats(post), os = stats(other);
+    card.innerHTML = `<h3>Simulated ratings · ${g.name}</h3><p class="sub">Urgency of negative minus neutral (rating points)</p><div class="chart"></div>
+      <div class="callout">Negative more urgent <b>${pct(ps.up, 1)}</b> · equal ${pct(ps.eq, 1)} · less urgent <b>${pct(ps.dn, 1)}</b><br><span style="color:var(--muted)">${cmp === 'prior' ? 'Prior' : 'Original run'}: ${pct(os.up, 1)} · ${pct(os.eq, 1)} · ${pct(os.dn, 1)}</span></div>`;
+    const el = card.querySelector('.chart'), W = Math.max(220, el.clientWidth), H = 200, m = { t: 12, r: 6, b: 24, l: 36 };
+    const svg = S('svg', { width: W, height: H }, el), iw = W - m.l - m.r, ih = H - m.t - m.b, yMax = 0.4, y = v => m.t + ih - v / yMax * ih;
+    [0, 0.1, 0.2, 0.3, 0.4].forEach(t => { S('line', { x1: m.l, x2: W - m.r, y1: y(t), y2: y(t), stroke: t ? 'var(--grid)' : 'var(--axis)' }, svg); S('text', { x: m.l - 6, y: y(t) + 4, 'text-anchor': 'end', class: 'tick' }, svg).textContent = t * 100 + '%'; });
+    const band = iw / 9, bw = band * 0.72; let d = '';
+    for (let i = 0; i < 9; i++) {
+      const v = i - 4, fp = post[i] / ps.tot, fo = other[i] / os.tot, x = m.l + i * band + (band - bw) / 2, top = y(fp), base = y(0), r = Math.min(4, base - top);
+      S('path', { d: `M${x},${base}V${top + r}Q${x},${top} ${x + r},${top}H${x + bw - r}Q${x + bw},${top} ${x + bw},${top + r}V${base}Z`, fill: 'var(--neutral)', opacity: v === 0 ? 0.55 : 1 }, svg);
+      const x0 = m.l + i * band; d += (i ? `V${y(fo)}` : `M${x0},${y(fo)}`) + `H${x0 + band}`;
+      S('text', { x: x0 + band / 2, y: m.t + ih + 15, 'text-anchor': 'middle', class: 'tick' }, svg).textContent = (v > 0 ? '+' : '') + v;
+      bindTip(S('rect', { x: x0, y: m.t, width: band, height: ih, class: 'hit' }, svg), 'Difference ' + (v > 0 ? '+' : '') + v, ['Re-run: ' + pct(fp, 1), (cmp === 'prior' ? 'Prior: ' : 'Original: ') + pct(fo, 1)]);
+    }
+    S('path', { d, fill: 'none', stroke: cmp === 'prior' ? 'var(--prior)' : 'var(--orig)', 'stroke-width': 2, style: 'pointer-events:none' }, svg);
+  });
+}
+function renderTables() {
+  let h = '<thead><tr><th>Belief group</th><th>Mean effect</th><th>89% interval</th><th>P(effect &gt; 0)</th><th>Evidence ratio</th><th>Evidence</th></tr></thead><tbody>';
+  MODEL_GROUPS.forEach(g => { const s = DATA.summary.find(x => x.group === g.key); if (s) h += `<tr><td>${g.name}</td><td>${sgn(+s.mean, 3)}</td><td>${sgn(+s.pi89_low)} to ${sgn(+s.pi89_high)}</td><td>${pct(+s.prob_positive, 1)}</td><td>${fmt(+s.evid_ratio, 2)}</td><td style="text-align:right">${s.evidence}</td></tr>`; });
+  document.getElementById('tbl-summary').innerHTML = h + '</tbody>';
+
+  let r = '<thead><tr><th>Belief group</th><th>Outcome</th><th>Original</th><th>Re-run</th><th>Δ (pp)</th><th>Status</th></tr></thead><tbody>';
+  let worst = 0;
+  MODEL_GROUPS.forEach(g => {
+    const o = stats(DATA.contrasts['original|posterior|' + g.j]), n = stats(DATA.contrasts['rerun|posterior|' + g.j]);
+    [['Negative more urgent', 'up'], ['Equal', 'eq'], ['Neutral more urgent', 'dn']].forEach(([lab, k], i) => {
+      const dpp = (n[k] - o[k]) * 100; worst = Math.max(worst, Math.abs(dpp));
+      const ok = Math.abs(dpp) <= 2;
+      r += `<tr><td>${i ? '' : g.name}</td><td style="text-align:left">${lab}</td><td>${pct(o[k], 1)}</td><td>${pct(n[k], 1)}</td><td>${sgn(dpp, 1)}</td><td class="${ok ? 'ok' : 'chk'}">${ok ? '✓ matches' : '⚠ differs'}</td></tr>`;
+    });
+  });
+  document.getElementById('tbl-repro').innerHTML = r + '</tbody>';
+  document.getElementById('co-repro').innerHTML = worst <= 2
+    ? `<b>Reproduces.</b> The largest gap is ${fmt(worst, 1)} percentage points, which is within Monte-Carlo noise.`
+    : `<b>Largest gap ${fmt(worst, 1)} pp.</b> Rows marked ⚠ differ by more than 2 points. Possible causes are run-to-run sampling variation or newer package versions in the rebuilt image.`;
+
+  const rows = DATA.precis;
+  const cols = Object.keys(rows[0] || {});
+  const col = re => cols.find(c => re.test(c));
+  const cMean = col(/^mean$/), cSd = col(/^sd$/), cLo = col(/5\.5/), cHi = col(/94\.5/), cR = col(/rhat/i), cE = col(/ess/i);
+  let p = `<thead><tr><th>Parameter</th><th>Mean</th><th>SD</th><th>5.5%</th><th>94.5%</th><th>R-hat</th><th>ESS</th></tr></thead><tbody>`;
+  const label = s => s.replace(/^sentiment\[(\d),(\d)\]$/, (_, a, b) => `sentiment[${a === '2' ? 'neg' : 'neu'}, ${['Disagree', 'No op.', 'Agree'][b - 1]}]`);
+  rows.forEach(x => {
+    const rh = +x[cR], bad = rh > 1.01;
+    p += `<tr><td>${label(x.parameter)}</td><td>${fmt(+x[cMean])}</td><td>${fmt(+x[cSd])}</td><td>${fmt(+x[cLo])}</td><td>${fmt(+x[cHi])}</td><td class="${bad ? 'chk' : 'ok'}">${fmt(rh, 3)}</td><td>${cE ? Math.round(+x[cE]) : '–'}</td></tr>`;
+  });
+  document.getElementById('tbl-precis').innerHTML = p + '</tbody>';
+}
+
+// ---------- beliefs, demographics, raw ----------
+function renderBeliefs(rs) {
+  legend(document.getElementById('lg-lik'), LIK_NAMES.map((n, i) => ({ name: n, color: LIK[i] })));
+  const host = document.getElementById('c-lik'); host.innerHTML = '';
+  [['p1', 'perception-qs_1', 'Statement 1'], ['p2', 'perception-qs_2', 'Statement 2'], ['p3', 'perception-qs_3', 'Statement 3 (defines belief groups)']].forEach(([k, q, short]) => {
+    const p = document.createElement('div'); p.className = 'q'; p.innerHTML = '<b>' + short + '.</b> ' + DATA.questions[q]; host.appendChild(p);
+    const d = document.createElement('div'); host.appendChild(d);
+    const vals = rs.map(r => r[k]).filter(v => v != null);
+    hstack(d, [{ label: '', tipLabel: short, parts: [1, 2, 3, 4, 5].map((s, i) => ({ name: LIK_NAMES[i], count: vals.filter(v => v === s).length, color: LIK[i], ink: i === 0 || i === 4 ? '#fff' : 'var(--ink)' })) }], { labelW: 0 });
+  });
+}
+function renderDemo(rs) {
+  const exp = rs.map(r => r.exp).filter(v => v != null), e5 = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45];
+  const ec = e5.map((e, i) => exp.filter(v => v >= e && (i === e5.length - 1 || v < e5[i + 1])).length), ey = niceMax(Math.max(...ec));
+  vbars(document.getElementById('c-exp'), e5.map((e, i) => ({ label: e, bars: [{ value: ec[i], color: 'var(--neutral)', title: (i === e5.length - 1 ? e + '+' : e + '–' + (e + 4)) + ' years', lines: [ec[i] + ' participants'] }] })), { yMax: ey, yTicks: [0, ey / 4, ey / 2, 3 * ey / 4, ey], pad: 0.12, maxBar: 36, height: 190 });
+  const base = DATA.responses.filter(inSample);
+  const bg = ['Agree', 'Neutral', 'Disagree'].map(g => base.filter(r => r.group === g).length), by = niceMax(Math.max(...bg));
+  vbars(document.getElementById('c-bg'), ['Agree', 'Neutral', 'Disagree'].map((g, i) => ({ label: GNAME[g], bars: [{ value: bg[i], color: 'var(--neutral)', label: String(bg[i]), title: GNAME[g], lines: [bg[i] + ' participants'] }] })), { yMax: by, yTicks: [0, by / 4, by / 2, 3 * by / 4, by], height: 190, maxBar: 56 });
+  const f = [1, 2].map(k => rs.filter(r => r.flow === k).length), fy = niceMax(Math.max(...f));
+  vbars(document.getElementById('c-flow'), f.map((c, i) => ({ label: 'Flow ' + (i + 1), bars: [{ value: c, color: 'var(--neutral)', label: String(c), title: 'Flow ' + (i + 1), lines: [c + ' participants'] }] })), { yMax: fy, yTicks: [0, fy / 4, fy / 2, 3 * fy / 4, fy], height: 190, maxBar: 56 });
+}
+function renderRaw(rs) {
+  document.getElementById('raw-sum').textContent = 'Show response table (' + rs.length + ' rows)';
+  let h = '<thead><tr><th>#</th><th style="text-align:left">Belief group</th><th>Flow</th><th>U1</th><th>U2</th><th>U3</th><th>U4</th><th>Neg − neu</th><th>Statement 3</th><th>Exp.</th><th>In analysis</th></tr></thead><tbody>';
+  rs.forEach(r => {
+    const a = [], b = [];
+    const cells = r.urgency.map((v, i) => { const n = isNeg(r.flow, i + 1); if (v != null) (n ? a : b).push(v); return `<td style="${n ? 'background:color-mix(in srgb, var(--negative) 16%, transparent)' : ''}">${v ?? '–'}</td>`; }).join('');
+    const d = a.length === 2 && b.length === 2 ? sgn(mean(a) - mean(b), 1) : '–';
+    h += `<tr><td>${r.id}</td><td style="text-align:left">${r.group ? GNAME[r.group] : '–'}</td><td>${r.flow}</td>${cells}<td>${d}</td><td>${r.p3 ?? '–'}</td><td>${r.exp ?? '–'}</td><td>${r.inAnalysis ? 'yes' : 'no'}</td></tr>`;
+  });
+  document.getElementById('tbl-raw').innerHTML = h + '</tbody>';
+}
+
+function seg(id, opts, key) {
+  const el = document.getElementById(id); el.innerHTML = '';
+  opts.forEach(o => {
+    const b = document.createElement('button'); b.type = 'button'; b.textContent = o.label;
+    b.setAttribute('aria-pressed', state[key] === o.value);
+    b.onclick = () => { state[key] = o.value; try { localStorage.setItem('dashSaifU', JSON.stringify(state)); } catch (e) {} render(); };
+    el.appendChild(b);
+  });
+}
+function render() {
+  const all = DATA.responses;
+  seg('fSample', [{ label: 'Analysis sample (' + all.filter(r => r.inAnalysis).length + ')', value: 'analysis' }, { label: 'All non-pilot (' + all.length + ')', value: 'all' }], 'sample');
+  seg('fGroup', GROUPS.map(g => ({ label: g === 'All' ? 'All' : GNAME[g], value: g })), 'group');
+  seg('fCompare', [{ label: 'Prior', value: 'prior' }, { label: 'Original run', value: 'original' }], 'compare');
+  const rs = filtered();
+  renderVerdicts(); renderSurvey(rs); renderDensities(); renderSim(); renderTables(); renderBeliefs(rs); renderDemo(rs); renderRaw(rs);
+}
+document.getElementById('themeBtn').onclick = () => {
+  const cur = document.documentElement.getAttribute('data-theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  document.documentElement.setAttribute('data-theme', cur === 'dark' ? 'light' : 'dark');
+};
+let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(render, 120); });
+render();
+</script>
+</body>
+</html>

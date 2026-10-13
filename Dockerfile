@@ -29,13 +29,13 @@ ENV CMDSTAN=/install/cmdstan
 
 FROM cmdstan AS r-packages
 RUN mkdir -p $HOME/.R/ \ 
-  && echo "CXXFLAGS=-O3 -mtune=native -march=native -Wno-unused-variable -Wno-unused-function -Wno-macro-redefined" >> $HOME/.R/Makevars \
+  && echo "CXXFLAGS=-O3 -Wno-unused-variable -Wno-unused-function -Wno-macro-redefined" >> $HOME/.R/Makevars \
   && echo "CXXFLAGS+=-flto -Wno-unused-local-typedefs" >> $HOME/.R/Makevars \
   && echo "CXXFLAGS += -Wno-ignored-attributes -Wno-deprecated-declarations" >> $HOME/.R/Makevars \
   && echo "rstan::rstan_options(auto_write = TRUE)" >> /home/rstudio/.Rprofile \
   && echo "options(mc.cores = parallel::detectCores())" >> /home/rstudio/.Rprofile
 
-RUN install2.r -e devtools rstan plyr bayesplot brms gridExtra haven tidyr readxl sjstats ggthemes xml2 roxygen2 dagitty truncnorm ggdag cowplot bayesplot svglite
+RUN install2.r -e devtools remotes rstan plyr bayesplot brms gridExtra haven tidyr readxl sjstats ggthemes xml2 roxygen2 dagitty truncnorm ggdag cowplot bayesplot svglite ggridges forcats reshape2 scales
 
 RUN R -e "devtools::install_github('stan-dev/cmdstanr')"
 
@@ -54,3 +54,9 @@ RUN rm /home/rstudio/pt_1.1.tar.gz
 RUN rm -rf /tmp/downloaded_packages/ /tmp/*.rds
 
 RUN chmod -R 777 /install
+
+FROM r-source AS final
+
+# Ship the analysis, data, pre-computed outputs and dashboard with the image
+COPY --chown=rstudio:rstudio analyse_experiment.Rmd export_jan_23_no_ip_no_email.csv /home/rstudio/project/
+COPY --chown=rstudio:rstudio output /home/rstudio/project/output
