@@ -1,0 +1,3 @@
+satd-image.tar.gz
+*.tar.gz.part
+!pt_1.1.tar.gz
