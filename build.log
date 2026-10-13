@@ -1,0 +1,341 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.fixed
+#1 transferring dockerfile: 1.96kB done
+#1 WARN: FromAsCasing: 'as' and 'FROM' keywords' casing do not match (line 18)
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/rocker/rstudio:latest
+#2 DONE 0.8s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [base 1/1] FROM docker.io/rocker/rstudio:latest@sha256:32446ec3971379748b66639b96e72caed30901f1ebd50b9a38e5ca30d930f6eb
+#4 resolve docker.io/rocker/rstudio:latest@sha256:32446ec3971379748b66639b96e72caed30901f1ebd50b9a38e5ca30d930f6eb 0.0s done
+#4 DONE 0.0s
+
+#5 [r-packages 1/4] RUN mkdir -p $HOME/.R/   && echo "CXXFLAGS=-O3 -mtune=native -march=native -Wno-unused-variable -Wno-unused-function -Wno-macro-redefined" >> $HOME/.R/Makevars   && echo "CXXFLAGS+=-flto -Wno-unused-local-typedefs" >> $HOME/.R/Makevars   && echo "CXXFLAGS += -Wno-ignored-attributes -Wno-deprecated-declarations" >> $HOME/.R/Makevars   && echo "rstan::rstan_options(auto_write = TRUE)" >> /home/rstudio/.Rprofile   && echo "options(mc.cores = parallel::detectCores())" >> /home/rstudio/.Rprofile
+#5 CACHED
+
+#6 [apt-get 1/1] RUN apt-get update -qq   && apt-get -y --no-install-recommends install apt-utils libgit2-dev libssh2-1-dev libv8-dev libxml2-dev build-essential ed pkg-config apt-utils libglu1-mesa-dev libnlopt-dev nano libgsl-dev libz-dev libxt6 curl libglpk-dev
+#6 CACHED
+
+#7 [cmdstan 2/4] RUN git clone https://github.com/stan-dev/cmdstan.git --recursive
+#7 CACHED
+
+#8 [cmdstan 1/4] WORKDIR /install
+#8 CACHED
+
+#9 [cmdstan 3/4] WORKDIR /install/cmdstan
+#9 CACHED
+
+#10 [cmdstan 4/4] RUN make -j8 build
+#10 CACHED
+
+#11 [r-packages 2/4] RUN install2.r -e devtools rstan plyr bayesplot brms gridExtra haven tidyr readxl sjstats ggthemes xml2 roxygen2 dagitty truncnorm ggdag cowplot bayesplot svglite
+#11 CACHED
+
+#12 [internal] load build context
+#12 transferring context: 36B done
+#12 DONE 0.0s
+
+#13 [r-packages 3/4] RUN install2.r -e remotes
+#13 3.460 trying URL 'https://p3m.dev/cran/__linux__/noble/latest/src/contrib/remotes_2.5.0.tar.gz'
+#13 4.083 Content type 'binary/octet-stream' length 440720 bytes (430 KB)
+#13 4.083 ==================================================
+#13 4.156 downloaded 430 KB
+#13 4.156 
+#13 4.335 * installing *binary* package ‘remotes’ ...
+#13 4.341 * package ‘remotes’ successfully unpacked and SHA256 sums checked
+#13 4.342 * DONE (remotes)
+#13 4.347 
+#13 4.347 The downloaded source packages are in
+#13 4.347 	‘/tmp/downloaded_packages’
+#13 DONE 4.4s
+
+#14 [r-packages 4/4] RUN R -e "devtools::install_github('stan-dev/cmdstanr')"
+#14 0.167 
+#14 0.167 R version 4.6.1 (2026-06-24) -- "Happy Hop"
+#14 0.167 Copyright (C) 2026 The R Foundation for Statistical Computing
+#14 0.167 Platform: aarch64-unknown-linux-gnu
+#14 0.167 
+#14 0.167 R is free software and comes with ABSOLUTELY NO WARRANTY.
+#14 0.167 You are welcome to redistribute it under certain conditions.
+#14 0.167 Type 'license()' or 'licence()' for distribution details.
+#14 0.167 
+#14 0.167   Natural language support but running in an English locale
+#14 0.167 
+#14 0.167 R is a collaborative project with many contributors.
+#14 0.167 Type 'contributors()' for more information and
+#14 0.167 'citation()' on how to cite R or R packages in publications.
+#14 0.167 
+#14 0.167 Type 'demo()' for some demos, 'help()' for on-line help, or
+#14 0.167 'help.start()' for an HTML browser interface to help.
+#14 0.167 Type 'q()' to quit R.
+#14 0.167 
+#14 0.200 > devtools::install_github('stan-dev/cmdstanr')
+#14 0.958 Downloading GitHub repo stan-dev/cmdstanr@HEAD
+#14 4.431 data.table (NA -> 1.18.6.1) [CRAN]
+#14 4.432 Installing 1 packages: data.table
+#14 4.433 Installing package into ‘/usr/local/lib/R/site-library’
+#14 4.433 (as ‘lib’ is unspecified)
+#14 4.533 trying URL 'https://p3m.dev/cran/__linux__/noble/latest/src/contrib/data.table_1.18.6.1.tar.gz'
+#14 5.034 Content type 'binary/octet-stream' length 2984646 bytes (2.8 MB)
+#14 5.053 ==================================================
+#14 5.244 downloaded 2.8 MB
+#14 5.244 
+#14 5.475 * installing *binary* package ‘data.table’ ...
+#14 5.499 * package ‘data.table’ successfully unpacked and SHA256 sums checked
+#14 5.500 * DONE (data.table)
+#14 5.505 
+#14 5.505 The downloaded source packages are in
+#14 5.505 	‘/tmp/RtmpXfaiTe/downloaded_packages’
+#14 5.533 ── R CMD build ─────────────────────────────────────────────────────────────────
+#14 5.642 * checking for file ‘/tmp/RtmpXfaiTe/remotes73b63a90/stan-dev-cmdstanr-55342f4/DESCRIPTION’ ... OK
+#14 5.652 * preparing ‘cmdstanr’:
+#14 5.652 * checking DESCRIPTION meta-information ... OK
+#14 5.793 * checking for LF line-endings in source and make files and shell scripts
+#14 5.794 * checking for empty or unneeded directories
+#14 5.795 Omitted ‘LazyData’ from DESCRIPTION
+#14 5.939 * building ‘cmdstanr_0.9.0.9002.tar.gz’
+#14 6.019 
+#14 6.026 Installing package into ‘/usr/local/lib/R/site-library’
+#14 6.026 (as ‘lib’ is unspecified)
+#14 6.187 * installing *source* package ‘cmdstanr’ ...
+#14 6.187 ** this is package ‘cmdstanr’ version ‘0.9.0.9002’
+#14 6.187 ** using staged installation
+#14 6.197 ** R
+#14 6.210 ** inst
+#14 6.211 ** byte-compile and prepare package for lazy loading
+#14 9.703 ** help
+#14 9.793 *** installing help indices
+#14 9.858 *** copying figures
+#14 9.859 ** building package indices
+#14 9.995 ** installing vignettes
+#14 9.996 ** testing if installed package can be loaded from temporary location
+#14 10.46 ** testing if installed package can be loaded from final location
+#14 10.85 ** testing if installed package keeps a record of temporary installation path
+#14 10.86 * DONE (cmdstanr)
+#14 10.86 > 
+#14 10.86 Warning message:
+#14 10.86 `install_github()` was deprecated in devtools 2.5.0.
+#14 10.86 ℹ Please use pak::pak("user/repo") instead. 
+#14 DONE 10.9s
+
+#15 [r-source 1/7] COPY pt_1.1.tar.gz /home/rstudio
+#15 DONE 0.0s
+
+#16 [r-source 2/7] RUN install2.r -e /home/rstudio/pt_1.1.tar.gz
+#16 0.338 * installing *source* package ‘pt’ ...
+#16 0.338 ** this is package ‘pt’ version ‘1.1’
+#16 0.338 ** using staged installation
+#16 0.343 ** R
+#16 0.347 ** inst
+#16 0.350 ** byte-compile and prepare package for lazy loading
+#16 1.198 ** help
+#16 1.226 *** installing help indices
+#16 1.246 ** building package indices
+#16 1.353 ** installing vignettes
+#16 1.355 ** testing if installed package can be loaded from temporary location
+#16 1.471 ** testing if installed package can be loaded from final location
+#16 1.615 ** testing if installed package keeps a record of temporary installation path
+#16 1.617 * DONE (pt)
+#16 DONE 1.6s
+
+#17 [r-source 3/7] RUN R -e "devtools::install_github('rmcelreath/rethinking',ref='Experimental')"
+#17 0.096 
+#17 0.096 R version 4.6.1 (2026-06-24) -- "Happy Hop"
+#17 0.096 Copyright (C) 2026 The R Foundation for Statistical Computing
+#17 0.096 Platform: aarch64-unknown-linux-gnu
+#17 0.096 
+#17 0.096 R is free software and comes with ABSOLUTELY NO WARRANTY.
+#17 0.096 You are welcome to redistribute it under certain conditions.
+#17 0.096 Type 'license()' or 'licence()' for distribution details.
+#17 0.096 
+#17 0.096   Natural language support but running in an English locale
+#17 0.096 
+#17 0.096 R is a collaborative project with many contributors.
+#17 0.096 Type 'contributors()' for more information and
+#17 0.096 'citation()' on how to cite R or R packages in publications.
+#17 0.096 
+#17 0.096 Type 'demo()' for some demos, 'help()' for on-line help, or
+#17 0.096 'help.start()' for an HTML browser interface to help.
+#17 0.096 Type 'q()' to quit R.
+#17 0.096 
+#17 0.144 > devtools::install_github('rmcelreath/rethinking',ref='Experimental')
+#17 1.756 Downloading GitHub repo rmcelreath/rethinking@Experimental
+#17 5.147 shape (NA -> 1.4.6.1) [CRAN]
+#17 5.148 Installing 1 packages: shape
+#17 5.149 Installing package into ‘/usr/local/lib/R/site-library’
+#17 5.149 (as ‘lib’ is unspecified)
+#17 5.245 trying URL 'https://p3m.dev/cran/__linux__/noble/latest/src/contrib/shape_1.4.6.1.tar.gz'
+#17 5.870 Content type 'binary/octet-stream' length 751836 bytes (734 KB)
+#17 5.870 ==================================================
+#17 5.962 downloaded 734 KB
+#17 5.962 
+#17 6.086 * installing *binary* package ‘shape’ ...
+#17 6.091 * package ‘shape’ successfully unpacked and SHA256 sums checked
+#17 6.091 * DONE (shape)
+#17 6.095 
+#17 6.095 The downloaded source packages are in
+#17 6.095 	‘/tmp/RtmpW3RkFb/downloaded_packages’
+#17 6.110 ── R CMD build ─────────────────────────────────────────────────────────────────
+#17 6.197 * checking for file ‘/tmp/RtmpW3RkFb/remotes7ccad854/rmcelreath-rethinking-90e96c1/DESCRIPTION’ ... OK
+#17 6.208 * preparing ‘rethinking’:
+#17 6.209 * checking DESCRIPTION meta-information ... OK
+#17 6.305 * checking for LF line-endings in source and make files and shell scripts
+#17 6.306 * checking for empty or unneeded directories
+#17 6.306 * looking to see if a ‘data/datalist’ file should be added
+#17 6.526 * building ‘rethinking_2.46.tar.gz’
+#17 6.868 
+#17 6.876 Installing package into ‘/usr/local/lib/R/site-library’
+#17 6.876 (as ‘lib’ is unspecified)
+#17 7.058 * installing *source* package ‘rethinking’ ...
+#17 7.058 ** this is package ‘rethinking’ version ‘2.46’
+#17 7.058 ** using staged installation
+#17 7.062 ** R
+#17 7.075 ** data
+#17 7.077 ** inst
+#17 7.078 ** byte-compile and prepare package for lazy loading
+#17 9.808 ** help
+#17 9.855 *** installing help indices
+#17 9.883 ** building package indices
+#17 9.998 ** testing if installed package can be loaded from temporary location
+#17 10.34 ** testing if installed package can be loaded from final location
+#17 10.76 ** testing if installed package keeps a record of temporary installation path
+#17 10.76 * DONE (rethinking)
+#17 10.77 Warning message:
+#17 10.77 `install_github()` was deprecated in devtools 2.5.0.
+#17 10.77 ℹ Please use pak::pak("user/repo") instead. 
+#17 10.77 > 
+#17 DONE 10.8s
+
+#18 [r-source 4/7] RUN R -e "devtools::install_github('mjskay/tidybayes.rethinking')"
+#18 0.126 
+#18 0.126 R version 4.6.1 (2026-06-24) -- "Happy Hop"
+#18 0.126 Copyright (C) 2026 The R Foundation for Statistical Computing
+#18 0.126 Platform: aarch64-unknown-linux-gnu
+#18 0.126 
+#18 0.126 R is free software and comes with ABSOLUTELY NO WARRANTY.
+#18 0.126 You are welcome to redistribute it under certain conditions.
+#18 0.126 Type 'license()' or 'licence()' for distribution details.
+#18 0.126 
+#18 0.126   Natural language support but running in an English locale
+#18 0.126 
+#18 0.126 R is a collaborative project with many contributors.
+#18 0.126 Type 'contributors()' for more information and
+#18 0.126 'citation()' on how to cite R or R packages in publications.
+#18 0.126 
+#18 0.126 Type 'demo()' for some demos, 'help()' for on-line help, or
+#18 0.126 'help.start()' for an HTML browser interface to help.
+#18 0.126 Type 'q()' to quit R.
+#18 0.126 
+#18 0.169 > devtools::install_github('mjskay/tidybayes.rethinking')
+#18 1.791 Downloading GitHub repo mjskay/tidybayes.rethinking@HEAD
+#18 5.417 rethinking   (90e96c1fb... -> ac1b3b2cd...) [GitHub]
+#18 5.417 svUnit       (NA           -> 1.0.8       ) [CRAN]
+#18 5.417 arrayhelpers (NA           -> 1.1-2       ) [CRAN]
+#18 5.417 tidybayes    (NA           -> 3.0.7       ) [CRAN]
+#18 5.420 Installing 3 packages: svUnit, arrayhelpers, tidybayes
+#18 5.423 Installing packages into ‘/usr/local/lib/R/site-library’
+#18 5.423 (as ‘lib’ is unspecified)
+#18 5.538 trying URL 'https://p3m.dev/cran/__linux__/noble/latest/src/contrib/svUnit_1.0.8.tar.gz'
+#18 5.538 trying URL 'https://p3m.dev/cran/__linux__/noble/latest/src/contrib/arrayhelpers_1.1-2.tar.gz'
+#18 5.538 trying URL 'https://p3m.dev/cran/__linux__/noble/latest/src/contrib/tidybayes_3.0.7.tar.gz'
+#18 6.483 * installing *binary* package ‘svUnit’ ...
+#18 6.489 * package ‘svUnit’ successfully unpacked and SHA256 sums checked
+#18 6.489 * DONE (svUnit)
+#18 6.584 * installing *binary* package ‘arrayhelpers’ ...
+#18 6.587 * package ‘arrayhelpers’ successfully unpacked and SHA256 sums checked
+#18 6.590 * DONE (arrayhelpers)
+#18 6.730 * installing *binary* package ‘tidybayes’ ...
+#18 6.742 * package ‘tidybayes’ successfully unpacked and SHA256 sums checked
+#18 6.742 * DONE (tidybayes)
+#18 6.746 
+#18 6.746 The downloaded source packages are in
+#18 6.746 	‘/tmp/RtmpDwrvLl/downloaded_packages’
+#18 6.761 Downloading GitHub repo rmcelreath/rethinking@HEAD
+#18 7.946 
+#18 7.965 ── R CMD build ─────────────────────────────────────────────────────────────────
+#18 8.045 * checking for file ‘/tmp/RtmpDwrvLl/remotes719774aee/rmcelreath-rethinking-ac1b3b2/DESCRIPTION’ ... OK
+#18 8.060 * preparing ‘rethinking’:
+#18 8.062 * checking DESCRIPTION meta-information ... OK
+#18 8.155 * checking for LF line-endings in source and make files and shell scripts
+#18 8.155 * checking for empty or unneeded directories
+#18 8.156 * looking to see if a ‘data/datalist’ file should be added
+#18 8.370 * building ‘rethinking_2.42.tar.gz’
+#18 8.720 
+#18 8.728 Installing package into ‘/usr/local/lib/R/site-library’
+#18 8.728 (as ‘lib’ is unspecified)
+#18 8.908 * installing *source* package ‘rethinking’ ...
+#18 8.908 ** this is package ‘rethinking’ version ‘2.42’
+#18 8.914 ** using staged installation
+#18 8.919 ** R
+#18 8.932 ** data
+#18 8.934 ** inst
+#18 8.934 ** byte-compile and prepare package for lazy loading
+#18 11.72 ** help
+#18 11.77 *** installing help indices
+#18 11.80 ** building package indices
+#18 11.92 ** testing if installed package can be loaded from temporary location
+#18 12.34 ** testing if installed package can be loaded from final location
+#18 12.82 ** testing if installed package keeps a record of temporary installation path
+#18 12.83 * DONE (rethinking)
+#18 12.85 ── R CMD build ─────────────────────────────────────────────────────────────────
+#18 12.96 * checking for file ‘/tmp/RtmpDwrvLl/remotes7782388cb/mjskay-tidybayes.rethinking-867520f/DESCRIPTION’ ... OK
+#18 12.96 * preparing ‘tidybayes.rethinking’:
+#18 12.96 * checking DESCRIPTION meta-information ... OK
+#18 13.07 * checking for LF line-endings in source and make files and shell scripts
+#18 13.07 * checking for empty or unneeded directories
+#18 13.07 Omitted ‘LazyData’ from DESCRIPTION
+#18 13.08 * building ‘tidybayes.rethinking_3.0.0.tar.gz’
+#18 13.09 
+#18 13.09 Installing package into ‘/usr/local/lib/R/site-library’
+#18 13.09 (as ‘lib’ is unspecified)
+#18 13.20 * installing *source* package ‘tidybayes.rethinking’ ...
+#18 13.20 ** this is package ‘tidybayes.rethinking’ version ‘3.0.0’
+#18 13.20 ** using staged installation
+#18 13.20 ** R
+#18 13.20 ** inst
+#18 13.20 ** byte-compile and prepare package for lazy loading
+#18 13.82 ** help
+#18 13.83 *** installing help indices
+#18 13.83 *** copying figures
+#18 13.83 ** building package indices
+#18 13.91 ** installing vignettes
+#18 13.91 ** testing if installed package can be loaded from temporary location
+#18 14.39 ** testing if installed package can be loaded from final location
+#18 14.88 ** testing if installed package keeps a record of temporary installation path
+#18 14.88 * DONE (tidybayes.rethinking)
+#18 14.89 > 
+#18 14.89 Warning message:
+#18 14.89 `install_github()` was deprecated in devtools 2.5.0.
+#18 14.89 ℹ Please use pak::pak("user/repo") instead. 
+#18 DONE 14.9s
+
+#19 [r-source 5/7] RUN rm /home/rstudio/pt_1.1.tar.gz
+#19 DONE 0.1s
+
+#20 [r-source 6/7] RUN rm -rf /tmp/downloaded_packages/ /tmp/*.rds
+#20 DONE 0.1s
+
+#21 [r-source 7/7] RUN chmod -R 777 /install
+#21 DONE 17.6s
+
+#22 exporting to image
+#22 exporting layers
+#22 exporting layers 35.0s done
+#22 exporting manifest sha256:92dd26ac090576f8e046f3893677cd30564289c27527420e61da7b5c847de59a done
+#22 exporting config sha256:9658566776153fb35c03d6d82a56a3ea31fab6f16bcf7ef31467852940d67872 done
+#22 exporting attestation manifest sha256:2066e318bd753f60eb015eb8187984f539a763e8b5c335424c83aa967f7619de 0.0s done
+#22 exporting manifest list sha256:cc9abd3671a699136d3c3dd2a3a87a070b40c777d688c99fafa1b67ff421957d done
+#22 naming to docker.io/library/p17-rstudio:original done
+#22 unpacking to docker.io/library/p17-rstudio:original
+#22 unpacking to docker.io/library/p17-rstudio:original 18.9s done
+#22 DONE 54.1s
+
+ [33m2 warnings found (use docker --debug to expand):
+[0m - FromAsCasing: 'as' and 'FROM' keywords' casing do not match (line 18)
+ - LegacyKeyValueFormat: "ENV key=value" should be used instead of legacy "ENV key value" format (line 4)
