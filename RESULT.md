@@ -65,5 +65,39 @@ Committed in this repo at 51cbcd5 (branch `iwan`).
 
 | Version | Planned change | Purpose |
 |---|---|---|
-| v1-s2, v1-s3 (sensitivity) | seed only (for example 1, 2) | show how far the Agree OR moves with sampling noise |
+| v1 seeds 1, 2, 3 (sensitivity) | seed only | DONE 2026-10-13, see the section above |
 | v2 (RQ2) | grouping column `perception.qs_3` (Q9) replaced by `perception.qs_2` (Q8, "acceptable practice") | M1 RQ2: "swapping Q9 for Q8" |
+
+## v1 sensitivity: seeds 1, 2, 3 (run 2026-10-13, after v1)
+
+Same code as v1 (`work/seed-N/analyse_urgency_seeded.Rmd` differs from v1 only in the two seed values), same image. Seeds 1, 2, 3 were chosen
+and written into `run_seeds.sh` before any of them was run. These runs do not replace v1; v1 (seed 20261013) stays the reported result.
+Run with `./run_seeds.sh`; per-seed output in `work/seed-N/`. All three exited 0.
+
+| Seed | Agree OR | Agree evidence ratio | No Opinion OR | Disagree OR | Agree in 1.85-2.05 with "Strong for"? |
+|---|---|---|---|---|---|
+| 20261013 (v1) | 1.940 | 141.86 | 1.060 | 1.088 | yes |
+| 1 | 1.950 | 99.00 | 1.040 | 1.085 | yes |
+| 2 | 1.958 | 101.56 | 1.044 | 1.093 | yes |
+| 3 | 1.956 | 128.03 | 1.046 | 1.067 | yes |
+
+Spread across the four runs: Agree OR 1.940-1.958 (range 0.018), well inside the acceptance band; No Opinion 1.040-1.060; Disagree 1.067-1.093;
+evidence ratio for Agree 99-142, always above 10 ("Strong for"). The conclusion (REPRODUCED under the frozen rule) does not depend on the seed.
+
+Raw files per seed: `work/seed-N/Urgency perception-{1,2,3}.csv`, `evidence Urgency.csv`, `analyse_urgency_seeded.html`. sha256:
+
+    f5b9202a5b98952e6f360f94c25b0c947e2ea363777fee0d6edcd2eb8837096b  work/seed-1/evidence Urgency.csv
+    fa117457eab97032cec21a3a8bd885aee480c852f8244b0a72fa8b6f8609f502  work/seed-2/evidence Urgency.csv
+    fb26b6dac29e06db7c7672db4b802a0a3b6d184529cfa03fb84d0dca135acaa7  work/seed-3/evidence Urgency.csv
+    3fe2c47c60a9d8788aebd3f5275bc1be22abf7a11b3c9493a1b6aed0fbf4964f  work/seed-1/Urgency perception-1.csv
+    c03188358c47fbd053850f5185e45a06968524ac4cd1f53d46bdf8ace6d81b49  work/seed-1/Urgency perception-2.csv
+    b4ce23b392466ecf3b0643fa27c7cdc83767b9f4c1a534fd252928680f54746d  work/seed-1/Urgency perception-3.csv
+    797f8482fb0642f789e6db74a08c58c2a0eb84d33510a34cf334541c34f5261b  work/seed-2/Urgency perception-1.csv
+    f1187e28e5b308d5f97a8772e6e5b89a20596f8eb9a162fa4d4fa833d0196ae2  work/seed-2/Urgency perception-2.csv
+    1c46171fafb5dcc16c38a01cb1f28fa7fa56976ef4e70d74a0e1f06588fef2b1  work/seed-2/Urgency perception-3.csv
+    006d3cd30206cf0b5255ad32c4f2f30d6fbff6d145a6814b8a8eb2dc18be1884  work/seed-3/Urgency perception-1.csv
+    cdaee33a66487fb2d28f4a2c3f2c963d568a7a83f4339afc190a53c475117925  work/seed-3/Urgency perception-2.csv
+    09e2844a57ad9f38ff6407a9d9f4edbca95a1fafd14ac5ce02c2020f865968ae  work/seed-3/Urgency perception-3.csv
+    ad5cd2fa04abee40f8a985dfda8779516afd12580726f8cdf60608bdefaa2730  work/seed-1/analyse_urgency_seeded.html
+    64e942ee04f91adf50178009a55c184d6e52560ad801e47ef4089c797bece825  work/seed-2/analyse_urgency_seeded.html
+    943800c735af3143246113779cd7c2a4dcf46498dee323c949451c34c81300ad  work/seed-3/analyse_urgency_seeded.html
