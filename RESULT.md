@@ -103,3 +103,19 @@ Raw files per seed: `work/seed-N/Urgency perception-{1,2,3}.csv`, `evidence Urge
     ad5cd2fa04abee40f8a985dfda8779516afd12580726f8cdf60608bdefaa2730  work/seed-1/analyse_urgency_seeded.html
     64e942ee04f91adf50178009a55c184d6e52560ad801e47ef4089c797bece825  work/seed-2/analyse_urgency_seeded.html
     943800c735af3143246113779cd7c2a4dcf46498dee323c949451c34c81300ad  work/seed-3/analyse_urgency_seeded.html
+
+## Independent cross-check by Saif Khawaldeh (added 2026-10-14; does not replace v1)
+
+Saif ran the Urgency analysis independently on branch `saif` (commit `283d458`, 2026-10-13): a standalone script `output_urgency/run_urgency.R`, a different seed (4928), `RNGkind("L'Ecuyer-CMRG")`, and his own Docker image (`-march=native` removed). It is a different route from v1 (which runs the authors' notebook with three recorded edits), so it counts as a cross-check, not as a second version of this reproduction. His own deviations are not recorded in a deviation file; that is for him to add if the group wants his run in the formal record.
+
+The ORs below were computed by us with the same rule as v1 (P(contrast > 0) / P(contrast < 0)) from Saif's raw files `output_urgency/Urgency perception-{1,2,3}.csv` (100,000 draws each), using the same `awk` command as v1:
+
+| Group (Q9) | Saif up | Saif down | OR (Saif, seed 4928) | OR (v1, seed 20261013) | In M1 range / near 1? |
+|---|---|---|---|---|---|
+| Agree (j=3) | 48671 | 25184 | **1.933** | 1.940 | yes (1.85-2.05) |
+| No Opinion (j=2) | 37407 | 35899 | 1.042 | 1.060 | yes (near 1) |
+| Disagree (j=1) | 37016 | 34048 | 1.087 | 1.088 | yes (near 1) |
+
+Saif's own summary (`output_urgency/urgency_posterior_summary.csv`) gives an evidence ratio of 113.29 for Agree ("Strong for"), against 141.86 in v1. The conclusion agrees: REPRODUCED under the frozen rule.
+
+Limits: his files were read from git, not re-run by us; his script was not diffed line by line against the authors' notebook here; the check relies on the same OR definition as v1.
