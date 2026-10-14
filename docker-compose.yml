@@ -1,0 +1,12 @@
+# P17 (Cassee et al., negativity in SATD). Build = the authors' unmodified Dockerfile (docker/Dockerfile).
+# RStudio on http://localhost:8787 (user rstudio). ./work is mounted so every edit and output stays on the Mac.
+services:
+  rstudio:
+    build: {context: ./docker, dockerfile: Dockerfile.fixed}
+    image: p17-rstudio:original
+    ports: ["127.0.0.1:8787:8787"]
+    environment:
+      DISABLE_AUTH: "true"
+    volumes:
+      - ./work:/home/rstudio/work
+    working_dir: /home/rstudio/work
