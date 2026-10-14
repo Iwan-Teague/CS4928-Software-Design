@@ -1,0 +1,474 @@
+---
+output:
+  html_document: default
+  pdf_document: default
+---
+# Introduction
+
+In this sheet we take some of the initial data, wrangle the data to have a proper
+dataframe, and finally try to fit some models. Recall that each row is a participant 
+to the experiment, and each participant is assigned to one of the two flows. The 
+flow dictates what variant of a vignette the participants sees  (neutral or negative). 
+In total a participant see four vignettes, two neutral and two negative.
+
+What we aim to understand is whether the presence of negativity increases the priority 
+score (measured as _effort_, _urgency_, or _importance_). 
+
+Additionally we also record some information on the beliefs of practitioners towards 
+the practice of annotating, and using, negativity in SATD as prioritization mechanism. 
+
+```{r, include=F}
+library(brms)
+library(rethinking)
+library(ggplot2)
+library(reshape2)
+library(dagitty)
+library(scales)
+library(bayesplot)
+library(tidyr)
+library(ggridges)
+library(forcats)
+library(ggthemes)
+```
+
+```{r}
+set.seed(20261013)  # DEVIATION 2: fixed seed (M1 requires it)
+df <- read.csv("export_jan_23_no_ip_no_email.csv")
+
+# Drop two rows added by qualtrics
+df <- df[3:nrow(df),]
+
+print(nrow(df))
+
+df$Experience <- as.numeric(df$Experience)
+
+# Remove the three pilot responses
+df <- df[!(df$Create.New.Field.or.Choose.From.Dropdown... %in% "pilot"),]
+
+print(nrow(df))
+
+df <- df[df$Experience < 50,]
+
+print(nrow(df))
+
+df_cast = data.frame(
+    `U1`=df$Urgency.1, 
+    `U2` = df$Urgency.2, 
+    `U3` = df$Urgency.3, 
+    `U4` = df$Urgency.4, 
+    
+    `I1` = df$Importance.1,
+    `I2` = df$Importance.2,
+    `I3` = df$Importance.3,
+    `I4` = df$Importance.4,
+    
+    `E1` = df$Effort.1,
+    `E2` = df$Effort.2,
+    `E3` = df$Effort.3,
+    `E4` = df$Effort.4,
+    
+    flow = df$flow, 
+    perception_3 = df$perception.qs_3,
+    experience = standardize(df$Experience))
+
+df_cast[,1:ncol(df_cast)] <- sapply(df_cast[,1:ncol(df_cast)], as.numeric)
+```
+Create a set of dataframes with outcomes for each of the three constructs for each of the four vignettes. Als translate the perception score to a trinary scale. 
+
+```{r, include=F}
+precis(df_cast)
+
+
+
+derive_perception <- function(row, output) {
+  val <- row["perception_3"]
+  
+  if(is.na(val)) {
+    return(NA)
+  }
+  
+  if(row["perception_3"] > 3) {
+    return("Agree")
+  } else if(row["perception_3"] < 3) {
+    return("Disagree")
+  } else {
+    return("Neutral")
+  }
+}
+
+df_cast$perception = apply(df_cast, 1, derive_perception)
+df_cast$perception_3 <- NULL
+
+df_effort  <- melt(df_cast, id.vars = c("flow", "perception", "experience"), measure.vars = c('E1', 'E2', 'E3', 'E4'), value.name = "outcome", variable.name = "vignette")
+
+df_effort$vignette <- as.numeric(df_effort$vignette)
+
+df_importance  <- melt(df_cast, id.vars = c("flow", "perception", "experience"), measure.vars = c('I1', 'I2', 'I3', 'I4'), value.name = "outcome", variable.name = "vignette")
+
+df_importance$vignette <- as.numeric(df_importance$vignette)
+
+df_urgency <- melt(df_cast, id.vars = c("flow", "perception", "experience"), measure.vars = c('U1', 'U2', 'U3', 'U4'), value.name = "outcome", variable.name = "vignette")
+
+df_urgency$vignette <- as.numeric(df_urgency$vignette)
+
+
+outcome_dfs = list(
+  list(Name='Effort', DF = df_effort),
+  list(Name='Urgency', DF = df_urgency),
+  list(Name='Importance', DF= df_importance)
+)
+
+```
+
+```{r}
+print(nrow(outcome_dfs[[2]]$DF)/4)
+```
+
+## Translation
+
+We translate the flows (using the flow variable) back to rediscover the values for constructed and sentiment. This is based on Table 3 in the manuscript.
+
+```{r, include=F}
+
+# the value 2 is used to encode that a vignette was negative, 
+# while the 1 is used to encode neutral.
+derive_sentiment <- function(row, output) {
+  if(is.na(row["flow"])) {
+    return(NULL)
+  }
+  
+  if (row["flow"] == 1) {
+    if(row["vignette"] == 1) {
+      return(2)
+    } 
+    if(row["vignette"] == 2) {
+      return(1)
+    } 
+    if(row["vignette"] == 3) {
+      return(2)
+    }
+    if(row["vignette"] == 4) {
+      return(1)
+    }
+  } else {
+    if(row["vignette"] == 1) {
+      return(1)
+    } 
+    if(row["vignette"] == 2) {
+      return(2)
+    } 
+    if(row["vignette"] == 3) {
+      return(1)
+    }
+    if(row["vignette"] == 4) {
+      return(2)
+    }
+  }
+}
+
+derive_constructed <- function(row, output) {
+  if(is.na(row["flow"])) {
+    return(NULL)
+  }
+  
+  if (row["flow"] == 1) {
+    if(row["vignette"] == 1) {
+      return(1)
+    } 
+    if(row["vignette"] == 2) {
+      return(1)
+    } 
+    if(row["vignette"] == 3) {
+      return(2)
+    }
+    if(row["vignette"] == 4) {
+      return(2)
+    }
+  } else {
+    if(row["vignette"] == 1) {
+      return(2)
+    } 
+    if(row["vignette"] == 2) {
+      return(2)
+    } 
+    if(row["vignette"] == 3) {
+      return(1)
+    }
+    if(row["vignette"] == 4) {
+      return(1)
+    }
+  }
+}
+
+code_perception <- function(row, output) {
+  if(is.na(row["perception"])) {
+    return(NA)
+  }
+  
+  if(row["perception"] == "Agree") {
+    return(3)
+  } else if(row["perception"] == "Disagree") {
+    return(1)
+  } else{
+    return(2)
+  }
+}
+
+for(i in 1:3) {
+  outcome_dfs[[i]]$DF$perception <- apply(outcome_dfs[[i]]$DF, 1, code_perception)
+  outcome_dfs[[i]]$DF$is_neg <- apply(outcome_dfs[[i]]$DF, 1, derive_sentiment)
+  outcome_dfs[[i]]$DF$constructed <- apply(outcome_dfs[[i]]$DF, 1, derive_constructed)
+  
+  outcome_dfs[[i]]$DF <- outcome_dfs[[i]]$DF[!rowSums((is.na(outcome_dfs[[i]]$DF))),]
+}
+```
+
+## Models 
+
+The below cell contains the model we test, the model is based on the dag created 
+`ggdag.Rmd`. The model uses ordered logit as likelihood function (Chp. 12 Rethinking), because our dependent 
+variable is an ordered categorical variable. 
+
+Each vignette (V) has two variations, a negative one and a neutral one (N). Additionally, 
+one ``half'' of the vignette is manually constructed. This is a variable 
+we also record (C), and that we also include in some of the models. Because 
+what if the influence of construction is greater than that of negativity?
+
+The outcome variable is O. 
+
+```{r}
+fit_models_for_dataframe = function(df_in, do_log_lik) {
+  
+  dat <- list(
+    O = df_in$outcome,
+    V = df_in$vignette,
+    N = df_in$is_neg,
+    C = df_in$constructed,
+    P = df_in$perception,
+    E = df_in$experience
+  )
+  
+  
+  
+  m_adjust_c <-ulam(
+    alist(
+      O ~ dordlogit(phi, cutpoints),
+      phi <- sentiment[N, P] + constructed[C] + experience*E,
+      matrix[2, 3]: sentiment ~ dnorm(0, 0.5),
+      vector[2] : constructed ~ dnorm(0, 0.5),
+      experience ~ dnorm(0, .5),
+      ordered[4] : cutpoints ~ dnorm(0, 2)
+    ), data=dat, chains = 4, cores = 4, log_lik = do_log_lik, iter=2000, force_compile = T, seed=20261013)
+  
+  models <- list(m_adjust_c = m_adjust_c)
+  
+  return(models)
+
+}
+```
+
+
+## Sampling 
+
+this is where it gets interesting, we sample from the model to understand what 
+the actual impact is. In particular, per vignette, we sample a ton of observations, and we 
+plot the contrast between the obtained outcomes. 
+
+The below plots visualize the density plots of sampling from the best performing model. 
+We sample twice per vignette, once for the negative instance, and once for the neutral instance, 
+we then contrast these distributions (subtract them from each other), and we plot the 
+resulting density. 
+
+
+```{r}
+draw_contrast_causal <- function(chosen_model, perception_val = 1, constructed = 1, use_priors = F) {
+
+
+  if(use_priors) {
+    priors <- extract.prior(chosen_model)
+    
+    Rsim_neutr <- mcreplicate(100,sim(chosen_model, data = list(P=perception_val, N=1, C=constructed, E=0), post=priors), mc.cores=4)
+    Rsim_neg <- mcreplicate(100,sim(chosen_model, data = list(P=perception_val, N=2, C=constructed, E=0), post=priors), mc.cores=4)
+  
+  } else {
+    Rsim_neutr <- mcreplicate(100,sim(chosen_model, data = list(P=perception_val, N=1, C=constructed, E=0)), mc.cores=4)
+    Rsim_neg <- mcreplicate(100,sim(chosen_model, data = list(P=perception_val, N=2, C=constructed, E=0)), mc.cores=4)
+  }
+  # If this is greater than zero then the score of the negative vignette was larger.
+  contrast <- Rsim_neg - Rsim_neutr
+  
+  scores <- c(Rsim_neutr, Rsim_neg)
+  sent <- c(rep("Neutral", length(Rsim_neutr)), rep("Negative", length(Rsim_neg)))
+  
+  df_sim <- data.frame(Score=scores, Sentiment=sent)
+  
+  return(contrast)
+}
+
+```
+
+# Putting it all together
+
+This codes takes the `outcome_dfs` variable, and runs all of the code above, for each of the outcome variables. 
+
+```{r, echo=F, message=F}
+
+
+# Convert the value of evidence ratio to text using the definitions of 10.3758/s13428-018-01189-8
+evid_ratio_to_text <- function(evid_ratio) {
+  if(evid_ratio < 1/10) {
+    return("\\textbf{Strong against}")
+  }
+  if(evid_ratio < 1/3) {
+    return("\\textbf{Moderate against}")
+  }
+  if(evid_ratio < 1) {
+    return("Anecdotal against")
+  }
+  if (evid_ratio < 3 ) {
+    return("Anecdotal for")
+  }
+  if(evid_ratio < 10) {
+    return("\\textbf{Moderate for}")
+  } else {
+    return("\\textbf{{Strong for}}")
+  }
+}
+
+bayesplot_theme_set(theme_minimal())
+
+hypothesis_table <- data.frame(perception=c("Agree", "No Opinion", "Disagree"))
+
+for(i in 2) {  # DEVIATION 3: Urgency only (outcome_dfs[[2]])
+  
+  df_run <- outcome_dfs[[i]]$DF
+  
+  print(nrow(df_run))
+  
+  outcome_name <- outcome_dfs[[i]]$Name
+  
+  models <- fit_models_for_dataframe(df_run, F)
+  
+  chosen_model <- models$m_adjust_c
+  
+  #plot(precis(chosen_model, depth = 3))
+  
+  for(j in 1:3) {
+    
+    contrast <- draw_contrast_causal(chosen_model, perception_val = j, use_priors = F)
+    
+    write.csv(data.frame(list(contrast=c(contrast))), paste(outcome_name, " perception-", j, ".csv", sep=""), row.names = FALSE)
+    
+    contrast_priors <- draw_contrast_causal(chosen_model, perception_val = j, use_priors = T)
+    
+    write.csv(data.frame(list(contrast=c(contrast_priors))), paste("priors ", outcome_name, " perception-", j, ".csv", sep=""), row.names = FALSE)
+    
+  }
+  
+  posterior_raw <- extract.samples(chosen_model)
+  
+  # Only take the posteriors we are interested in. Compute the contrast between the 
+  # scores for neutral sentiment and negative sentiment. A positive contrast value means that 
+  # the presence of negativity results in a higher prioritization score. 
+  
+  df_posterior <- data.frame(
+    "Disagree" = posterior_raw$sentiment[, 2, 1] - posterior_raw$sentiment[, 1, 1],
+    "No Opinion" = posterior_raw$sentiment[, 2, 2] - posterior_raw$sentiment[, 1, 2],
+    "Agree" = posterior_raw$sentiment[, 2, 3] - posterior_raw$sentiment[, 1, 3]
+  )
+  
+  labels = c(
+    "Disagree", 
+    "No Opinion",
+    "Agree"
+  )
+  
+  if(outcome_name != "Effort") {
+    labels = c()
+  }
+  
+  plot <- mcmc_areas(df_posterior,
+             prob = 0.89, # 89% intervals
+              prob_outer = 0.99, # 99%
+              point_est = "mean")
+  
+  
+  plot <- (plot 
+           + ggtitle(paste("Posteriors for ", outcome_name, sep="")) 
+           + theme(plot.title = element_text(hjust = 0.5)) 
+           + scale_y_discrete(labels = labels)
+           + geom_vline(xintercept=c(0), linetype="dotted", color="black")
+           )
+  
+  ggsave(paste("Posterior_", outcome_name,".eps", sep = ""),
+         plot = plot,
+         device = "pdf",
+         width = 3.5,
+         height = 7)
+  
+  
+  
+  priors <- extract.prior(chosen_model)
+  
+  # Only take the posteriors we are interested in. Compute the contrast between the 
+  # scores for neutral sentiment and negative sentiment. A positive contrast value means that 
+  # the presence of negativity results in a higher prioritization score. 
+  
+  df_prior <- data.frame(
+    "Disagree" = priors$sentiment[, 2, 1] - priors$sentiment[, 1, 1],
+    "No Opinion" = priors$sentiment[, 2, 2] - priors$sentiment[, 1, 2],
+    "Agree" = priors$sentiment[, 2, 3] - priors$sentiment[, 1, 3]
+  )
+  
+  labels = c(
+    "Disagree", 
+    "No Opinion",
+    "Agree"
+  )
+  
+  if(outcome_name != "Effort") {
+    labels = c()
+  }
+  
+  plot <- mcmc_areas(df_prior,
+             prob = 0.89, # 89% intervals
+              prob_outer = 0.99, # 99%
+              point_est = "mean")
+  
+  
+  plot <- (plot 
+           + ggtitle(paste("Priors for ", outcome_name, sep="")) 
+           + theme(plot.title = element_text(hjust = 0.5)) 
+           + scale_y_discrete(labels = labels)
+           + geom_vline(xintercept=c(0), linetype="dotted", color="black"))
+  
+  ggsave(paste("Prior_", outcome_name,".eps", sep = ""),
+         plot = plot,
+         device = "pdf",
+         width = 3.5,
+         height = 7)
+  
+  
+  
+  # After plotting the posterior we move on and plot the outcome of the `hypothesis` testing. 
+  
+  H_d <- hypothesis(df_posterior, "Disagree > 0")
+  H_n <- hypothesis(df_posterior, "No.Opinion > 0")
+  H_a <- hypothesis(df_posterior, "Agree > 0")
+  
+  df_hyp <- data.frame(
+    hd = H_d$samples$H1,
+    hn = H_n$samples$H1,
+    ha = H_a$samples$H1
+  )
+  
+  agree_text <- evid_ratio_to_text(H_a$hypothesis$Evid.Ratio)
+  no_opinion_text <- evid_ratio_to_text(H_n$hypothesis$Evid.Ratio)
+  disagree_text <- evid_ratio_to_text(H_d$hypothesis$Evid.Ratio)
+
+  hypothesis_table[[outcome_name]] = c(agree_text, no_opinion_text, disagree_text)
+  write.csv(data.frame(group=c("Agree","No Opinion","Disagree"), evid_ratio=c(H_a$hypothesis$Evid.Ratio, H_n$hypothesis$Evid.Ratio, H_d$hypothesis$Evid.Ratio), post_prob=c(H_a$hypothesis$Post.Prob, H_n$hypothesis$Post.Prob, H_d$hypothesis$Post.Prob)), paste("evidence ", outcome_name, ".csv", sep=""), row.names=FALSE)  # DEVIATION 4: save numeric evidence ratios
+  
+}
+
+```
