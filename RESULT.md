@@ -54,6 +54,8 @@ Status against the frozen rule: **REPRODUCED** (Agree OR 1.940 inside 1.85-2.05 
 
 Committed in this repo at 51cbcd5 (branch `iwan`).
 
+> Note, 2026-10-14: the branch `iwan` was rewritten once to remove commit-message trailers. File contents, authors and dates are unchanged. Commit hashes changed: `51cbcd5` is now `e0f945b`, `7df8f3d` is now `6bcc2d6`, `8a72cae` is now `a63db14`. Earlier text in this file that names an old hash refers to the same content.
+
 ### Threats and limits
 
 - **OR definition.** The Rmd does not compute an OR; we derived it from the simulated contrasts as above. If the tracker's wording of "P(score up) / P(score down)" means something else (for example on posterior contrasts instead of simulated scores), the numbers change. Check the wording before the Week 7 entry.
