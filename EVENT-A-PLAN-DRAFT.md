@@ -1,4 +1,4 @@
-# Event A plan (frozen 2026-11-05), CS4928 Software Design (Abdul Razzaq), group G22, project P17
+# Event A plan (adopted 2026-11-06, after the run; NOT frozen before it), CS4928 Software Design (Abdul Razzaq), group G22, project P17
 
 Drafted 29 Oct 2026 by an AI assistant (Claude Code) from the P17 pack, the P17 Event A sheet, the brief and our `RESULT.md`, as a proposal for the group to
 discuss, change and then freeze. **The prediction in section 4 is the group's own judgement, not the assistant's.** The AI help is recorded in
@@ -6,11 +6,11 @@ discuss, change and then freeze. **The prediction in section 4 is the group's ow
 
 Adoption timeline:
 
-- **2026-10-29** - this plan drafted and committed (`d90e088`) as a proposal.
-- The group was unsure Event A applied to P17, so it **asked the lecturer by email and waited for his reply before proceeding**.
+- **2026-10-29** - this plan drafted and committed (`8bc019e`) as a proposal, marked DRAFT.
+- **2026-10-30 and 2026-11-02** - the group was unsure Event A applied to P17 and **asked the lecturer by email, then waited for his clarification**. His replies came on 2026-10-30 and 2026-11-03.
 - **2026-11-03** - the lecturer's reply confirmed Event A is applicable and that a partial attempt is acceptable.
-- **2026-11-05** - the group adopted sections 1-5 and froze the plan (tag `EVENT_A_PLAN`, dated 2026-11-05).
-- **2026-11-06** - the run landed on branch `iwan` (merge `4a17430`), after the freeze.
+- **Through 2026-11-05** - the tracker's Event A prediction cell still said a prediction was impossible; no prediction was frozen.
+- **2026-11-06** - the run landed on branch `iwan` (merge `4a17430`, 11:34 UTC). The plan and prediction were recorded **after** the run; tag `EVENT_A_PLAN` was created 2026-11-06, after the run, and says so. Recorded status: Partial.
 
 Deadline: **Fri 30 Oct 18:00** (Brightspace folder "Deadline - Event 1 Transfer Test"). Event A prediction assessment in the lab: extended to **Mon 2 Nov** for
 students who missed Monday's (bank holiday) lab (announcement 28 Oct).
@@ -60,9 +60,9 @@ ranks themselves too, not only rho). If the set is 20 items, also report Kendall
 **3d. M2 method applied first, unchanged.** Same seed (20261013), same model, same OR rule and acceptance band as M2 (`RESULT.md`), run on Urgency again so the
 event's evidence sits on the same footing; then the same script on Importance and on Effort (if section 2's secondary test is in scope).
 
-## 4. Prediction before execution (adopted by the group, 2026-11-05)
+## 4. Prediction before execution (written 2026-11-06, after the run; see timeline)
 
-Frozen wording for the tracker:
+Wording entered in the tracker:
 - The technical-only ranking will **differ from the sentiment-influenced ranking in at least one position**, because in M2 negative wording raised Urgency
   noticeably (Agree group OR 1.94, evidence ratio about 140) while the other two groups stayed near 1 (OR 1.06 and 1.09), so sentiment moved ratings for only part of the sample.
 - The **largest rank change** will be a negative-variant item whose comment states a weak technical problem.
@@ -81,9 +81,9 @@ group on Importance or Effort (so the effect is not specific to people who think
 - Link: commit hash and tags (`M1_PLAN`, `M2_REPRO`, `PRE_EVENT_A`, `EVENT_A_PLAN`), the coder sheets, the ranking table, raw model output with sha256.
 - Threats: four items is a very small ranking; respondents are 59 volunteers; coders know the study; the rule is ours, not the paper's; environment drift from 2024 package versions (as in M2).
 
-## 6. Open questions (settled before the 2026-11-05 freeze)
+## 6. Open questions (settled when the plan was adopted, 2026-11-06)
 
-The lecturer's reply of 2026-11-03 confirmed Event A applies to P17; the group settled these before adopting the plan.
+The lecturer's reply of 2026-11-03 confirmed Event A applies to P17; the group settled these when adopting the plan.
 
 1. Which items does the tracker's M1 row list as the bounded set (4 vignettes or 20 SATD examples)?
 2. Has anyone already entered an Event A prediction in the tracker? (Do not overwrite an earlier record; add a note.)
