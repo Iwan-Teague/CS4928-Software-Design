@@ -10,7 +10,7 @@ Adoption timeline:
 - The group was unsure Event A applied to P17, so it **asked the lecturer by email and waited for his reply before proceeding**.
 - **2026-11-03** - the lecturer's reply confirmed Event A is applicable and that a partial attempt is acceptable.
 - **2026-11-05** - the group adopted sections 1-5 and froze the plan (tag `EVENT_A_PLAN`, dated 2026-11-05).
-- **2026-11-06** - the run landed on branch `iwan` (merge `4c4e713`), after the freeze.
+- **2026-11-06** - the run landed on branch `iwan` (merge `4a17430`), after the freeze.
 
 Deadline: **Fri 30 Oct 18:00** (Brightspace folder "Deadline - Event 1 Transfer Test"). Event A prediction assessment in the lab: extended to **Mon 2 Nov** for
 students who missed Monday's (bank holiday) lab (announcement 28 Oct).

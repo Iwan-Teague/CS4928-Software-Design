@@ -56,6 +56,8 @@ Committed in this repo at 51cbcd5 (branch `iwan`).
 
 > Note, 2026-10-14: the branch `iwan` was rewritten once to remove commit-message trailers. File contents, authors and dates are unchanged. Commit hashes changed: `51cbcd5` is now `e0f945b`, `7df8f3d` is now `6bcc2d6`, `8a72cae` is now `a63db14`. Earlier text in this file that names an old hash refers to the same content.
 
+> Note, 2026-11-06: the history was rewritten on this day to remove AI attribution (the no-AI-trailer rule), before push. File contents and author dates are unchanged; commit hashes changed: `71bccb1` -> `f447363`, `b6916aa` -> `f935f08`, `49483e3` -> `c627582`, `d90e088` -> `8bc019e`, `f1263d6` -> `cdd594e` (author and committer corrected from "Claude" to Iwan Teague, same author date), PR merge `4c4e713` -> `d2dc89b`, merge `4108152` -> `4a17430`; every descendant of these, including the tip that carries this note, was rewritten with them. The `EVENT_A_PLAN` tag was re-pointed at the rewritten plan commit `8bc019e` (same date and message). The AI contributions themselves are disclosed in `AI_USE.md`. Earlier text anywhere in this repo that names an old hash refers to the same content.
+
 ### Threats and limits
 
 - **OR definition.** The Rmd does not compute an OR; we derived it from the simulated contrasts as above. If the tracker's wording of "P(score up) / P(score down)" means something else (for example on posterior contrasts instead of simulated scores), the numbers change. Check the wording before the Week 7 entry.
