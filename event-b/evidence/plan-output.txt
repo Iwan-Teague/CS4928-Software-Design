@@ -1,0 +1,12 @@
+valid respondents: 59
+negative-variant Urgency means: V1 2.267, V2 2.552, V3 2.733, V4 2.379
+technical order : D1 > D2 > V4 > V3-R2 > V2 > V1
+sentiment order : D1 > D2 > V3-R2 > V2 > V4 > V1
+sprint (5 units), technical: D1 + D2 + V4 + V2 (left 0)
+sprint (5 units), sentiment: D1 + D2 + V2 + V4 (left 0)
+  budget 3: technical D1+D2+V2               sentiment D1+D2+V2               same set
+  budget 4: technical D1+D2+V4               sentiment D1+D2+V2+V1            DIFFERENT SET
+  budget 5: technical D1+D2+V4+V2            sentiment D1+D2+V2+V4            same set
+  budget 6: technical D1+D2+V4+V2+V1         sentiment D1+D2+V3-R2            DIFFERENT SET
+  budget 7: technical D1+D2+V4+V2+V1         sentiment D1+D2+V3-R2+V2         DIFFERENT SET
+  budget 8: technical D1+D2+V4+V3-R2         sentiment D1+D2+V3-R2+V2+V1      DIFFERENT SET

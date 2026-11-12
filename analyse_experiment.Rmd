@@ -67,7 +67,7 @@ df_cast = data.frame(
     `E4` = df$Effort.4,
     
     flow = df$flow, 
-    perception_3 = df$perception.qs_2,
+    perception_3 = df$perception.qs_3,
     experience = standardize(df$Experience))
 
 df_cast[,1:ncol(df_cast)] <- sapply(df_cast[,1:ncol(df_cast)], as.numeric)
@@ -257,7 +257,7 @@ fit_models_for_dataframe = function(df_in, do_log_lik) {
       vector[2] : constructed ~ dnorm(0, 0.5),
       experience ~ dnorm(0, .5),
       ordered[4] : cutpoints ~ dnorm(0, 2)
-    ), data=dat, chains = 4, cores = 4, log_lik = do_log_lik, iter=2000, force_compile = T,seed = 42)
+    ), data=dat, chains = 4, cores = 4, log_lik = do_log_lik, iter=2000, force_compile = T)
   
   models <- list(m_adjust_c = m_adjust_c)
   
@@ -282,29 +282,20 @@ resulting density.
 ```{r}
 draw_contrast_causal <- function(chosen_model, perception_val = 1, constructed = 1, use_priors = F) {
 
-  set.seed(42)
+
   if(use_priors) {
     priors <- extract.prior(chosen_model)
+    
     Rsim_neutr <- mcreplicate(100,sim(chosen_model, data = list(P=perception_val, N=1, C=constructed, E=0), post=priors), mc.cores=4)
     Rsim_neg <- mcreplicate(100,sim(chosen_model, data = list(P=perception_val, N=2, C=constructed, E=0), post=priors), mc.cores=4)
+  
   } else {
     Rsim_neutr <- mcreplicate(100,sim(chosen_model, data = list(P=perception_val, N=1, C=constructed, E=0)), mc.cores=4)
     Rsim_neg <- mcreplicate(100,sim(chosen_model, data = list(P=perception_val, N=2, C=constructed, E=0)), mc.cores=4)
   }
-  
   # If this is greater than zero then the score of the negative vignette was larger.
   contrast <- Rsim_neg - Rsim_neutr
   
-  # CODE CALCULATING OR:
-  prob_up <- sum(contrast > 0)
-  prob_down <- sum(contrast < 0)
-  if(prob_down > 0) {
-    or_value <- prob_up / prob_down
-    print(paste("Odds Ratio for Perception group", perception_val, ":", or_value))
-  } else {
-    print(paste("Odds Ratio for Perception group", perception_val, ": Infinity (Everthing increases )"))
-  }
-
   scores <- c(Rsim_neutr, Rsim_neg)
   sent <- c(rep("Neutral", length(Rsim_neutr)), rep("Negative", length(Rsim_neg)))
   
@@ -347,7 +338,7 @@ bayesplot_theme_set(theme_minimal())
 
 hypothesis_table <- data.frame(perception=c("Agree", "No Opinion", "Disagree"))
 
-for(i in 2:2) {
+for(i in 1:3) {
   
   df_run <- outcome_dfs[[i]]$DF
   
