@@ -1,0 +1,7 @@
+item,summary,correctness_risk,design_violation,production_code,size,units,negative_variant_urgency,technical_rank,in_technical_sprint,sentiment_rank,in_sentiment_sprint
+D1,"V2 call site: getConstNode() is null for FOO = 1, value pass throws NPE",1,0,1,S,1,,1,1,1,1
+D2,ConstPath accepts '::' or blank parts; name/path invariant breaks again,1,0,1,S,1,,2,1,2,1
+V3-R2,Split ConstDecl into simple/scoped classes (FIXME's full suggestion),0,1,1,L,4,2.733,4,0,3,0
+V4,Plot-type if/else chain edited by hand for every new type (OCP),0,1,1,M,2,2.379,3,1,5,1
+V2,Value callback would be more efficient; cost stated as low,0,0,1,S,1,2.552,5,1,4,1
+V1,Regression-testing-only flags; remove,0,0,0,S,1,2.267,6,0,6,0

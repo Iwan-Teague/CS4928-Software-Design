@@ -56,6 +56,8 @@ Committed in this repo at 51cbcd5 (branch `iwan`).
 
 > Note, 2026-10-14: the branch `iwan` was rewritten once to remove commit-message trailers. File contents, authors and dates are unchanged. Commit hashes changed: `51cbcd5` is now `e0f945b`, `7df8f3d` is now `6bcc2d6`, `8a72cae` is now `a63db14`. Earlier text in this file that names an old hash refers to the same content.
 
+> Note, 2026-11-06: the history was rewritten on this day to remove AI attribution (the no-AI-trailer rule), before push. File contents and author dates are unchanged; commit hashes changed: `71bccb1` -> `f447363`, `b6916aa` -> `f935f08`, `49483e3` -> `c627582`, `d90e088` -> `8bc019e`, `f1263d6` -> `cdd594e` (author and committer corrected from "Claude" to Iwan Teague, same author date), PR merge `4c4e713` -> `d2dc89b`, merge `4108152` -> `4a17430`; every descendant of these, including the tip that carries this note, was rewritten with them. The `EVENT_A_PLAN` tag was re-pointed at the rewritten plan commit `8bc019e` (same date and message). The AI contributions themselves are disclosed in `AI_USE.md`. Earlier text anywhere in this repo that names an old hash refers to the same content.
+
 ### Threats and limits
 
 - **OR definition.** The Rmd does not compute an OR; we derived it from the simulated contrasts as above. If the tracker's wording of "P(score up) / P(score down)" means something else (for example on posterior contrasts instead of simulated scores), the numbers change. Check the wording before the Week 7 entry.
@@ -68,7 +70,7 @@ Committed in this repo at 51cbcd5 (branch `iwan`).
 | Version | Planned change | Purpose |
 |---|---|---|
 | v1 seeds 1, 2, 3 (sensitivity) | seed only | DONE 2026-10-13, see the section above |
-| v2 (RQ2) | grouping column `perception.qs_3` (Q9) replaced by `perception.qs_2` (Q8, "acceptable practice") | M1 RQ2: "swapping Q9 for Q8" |
+| v2 (RQ2) | grouping column `perception.qs_3` (Q9) replaced by `perception.qs_2` (Q8, "acceptable practice") | M1 RQ2: "swapping Q9 for Q8". DONE 2026-10-22 (Minh, seed 42), see the v2 section below |
 
 ## v1 sensitivity: seeds 1, 2, 3 (run 2026-10-13, after v1)
 
@@ -119,3 +121,47 @@ The ORs below were computed by us with the same rule as v1 (P(contrast > 0) / P(
 Saif's own summary (`output_urgency/urgency_posterior_summary.csv`) gives an evidence ratio of 113.29 for Agree ("Strong for"), against 141.86 in v1. The conclusion agrees: REPRODUCED under the frozen rule.
 
 Limits: his files were read from git, not re-run by us; his script was not diffed line by line against the authors' notebook here; the check relies on the same OR definition as v1.
+
+## v2: RQ2, run by Tien Nhat Minh Nguyen on 2026-10-22 (branch `minh`, commit `5e37f15`, seed 42)
+
+v2 is M1's second question: the model is rerun with the grouping column swapped from `perception.qs_3` (Q9) to
+`perception.qs_2` (Q8, the "acceptable practice" response). The notebook is Minh's own copy of the authors'
+`analyse_experiment.Rmd` on branch `minh`; his deviations are item 5 in `DEVIATIONS.md` (recorded 2026-11-06,
+after the run; the differences were verified by diffing his file against `original/analyse_experiment.Rmd`).
+
+Sample check: the Q8 split recounted independently from `work/export_jan_23_no_ip_no_email.csv` (branch `minh`),
+same cleaning rule as v1 (skip the two Qualtrics header rows, drop pilot rows, Experience < 50):
+59 valid respondents; Q8 split 7 Agree / 12 No Opinion / 40 Disagree, matching the M1 sample definition.
+
+ORs computed from Minh's saved contrast files `RQ2_results/Urgency perception-{1,2,3}.csv` (100,000 draws per
+group) with the same rule and `awk` command as v1. Under Q8 the Disagree group is the one that calls negativity
+unacceptable (40 respondents), so M1's expectation ("OR above 1.10" for them) applies to Disagree:
+
+| Group (Q8) | n draws | up | down | same | OR | Evidence ratio (proxy: up/down) | v1 OR (Q9) | OR move |
+|---|---|---|---|---|---|---|---|---|
+| Agree (j=3) | 100000 | 45827 | 27306 | 26867 | **1.678** | 1.68 ("Anecdotal for", proxy) | 1.940 | -0.262 |
+| No Opinion (j=2) | 100000 | 39489 | 33577 | 26934 | 1.176 | 1.18 ("Anecdotal for", proxy) | 1.060 | +0.116 |
+| Disagree (j=1) | 100000 | 40833 | 31567 | 27600 | **1.294** | 1.29 ("Anecdotal for", proxy) | 1.088 | +0.206 |
+
+Status against the frozen decision rule ("Q2 is different if any group's evidence rating changes or its OR moves
+by more than 0.3"):
+
+- No OR moves by more than 0.3 (largest: Agree, -0.262).
+- The Agree evidence rating changes: v1 "Strong for" (Evid.Ratio 141.86 from the saved notebook file) vs v2
+  "Anecdotal for" on the contrast proxy.
+- Therefore v2 is **DIFFERENT** under the frozen rule, driven by the evidence rating.
+- M1's directional expectation holds: Disagree OR 1.294 > 1.10.
+
+Threat on the rating comparison: Minh's run did not save the notebook's numeric evidence ratios (no equivalent of
+Deviation 4), so the v2 rating uses the contrast proxy (up/down), which is not like-for-like with v1's brms
+`hypothesis()` Evid.Ratio. Before the Week 10 Event B response cites the rating change, rerun the v1
+evidence-ratio save under the v2 manipulation (recorded as the open next step; not run for this entry).
+
+Other threats: one seed (42), chosen by Minh, no sensitivity seeds; his files were read from git, not rerun by us;
+the grouping swap itself was verified in the diff (column `perception.qs_2`, exactly the M1 manipulation).
+
+Raw evidence (sha256, branch `minh`):
+
+    0e22c314bdd1599d204cf6be37fa9de27a0351f57981dd8be58b0f80e086ba36  RQ2_results/Urgency perception-1.csv
+    a1941587ae54c6a0be3cd292d18e04c2c50343670ea7b3f666521e4043764bb7  RQ2_results/Urgency perception-2.csv
+    fe839e615c484ea56c86888d8e855af2c9821aa6ee219af59cae89f469af4eda  RQ2_results/Urgency perception-3.csv
