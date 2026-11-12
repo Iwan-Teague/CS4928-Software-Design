@@ -39,7 +39,17 @@ public class ConstDeclNode {
 
     public String getName() { return constNode.name(); }
 
-    /** Returns null for a simple declaration, exactly as before, so callers are unaffected. */
+    /**
+     * The declared path, never null (a simple declaration has an empty scope). Added in Event B (D1):
+     * new callers use this instead of null-checking getConstNode().
+     */
+    public ConstPath path() { return constNode; }
+
+    /**
+     * Returns null for a simple declaration, exactly as before, so existing callers are unaffected.
+     * @deprecated null stands for "simple declaration"; use {@link #path()} (Event B, D1).
+     */
+    @Deprecated
     public ConstPath getConstNode() { return constNode.isScoped() ? constNode : null; }
 
     public Object getValue() { return value; }
