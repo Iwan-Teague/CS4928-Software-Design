@@ -1,0 +1,47 @@
+# javac --release 17 + JUnit Jupiter 5.8.2 platform runner (Maven Central unreachable from the run environment); state: EVENT_B (fix applied)
+
+Picked up JAVA_TOOL_OPTIONS: 
+Picked up JAVA_TOOL_OPTIONS: 
+Note: event-a/design/src/test/java/p17/v3/Decl.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Picked up JAVA_TOOL_OPTIONS: 
+SUCCESSFUL  p17.v3.BeforeSyncBugTest#constructorAcceptsMismatch
+SUCCESSFUL  p17.v3.BeforeSyncBugTest#randomUpdatesBreakInvariant
+SUCCESSFUL  p17.v3.BeforeSyncBugTest#setConstNodeLeavesNameStale
+SUCCESSFUL  p17.v3.BeforeSyncBugTest#setNameLeavesConstNodeStale
+SUCCESSFUL  p17.v3.AfterSyncInvariantTest#setConstNodeUpdatesName
+SUCCESSFUL  p17.v3.AfterSyncInvariantTest#nullNameWithConstNode
+SUCCESSFUL  p17.v3.AfterSyncInvariantTest#randomUpdatesKeepInvariant
+SUCCESSFUL  p17.v3.AfterSyncInvariantTest#setConstNodeNull
+SUCCESSFUL  p17.v3.AfterSyncInvariantTest#setNameKeepsScope
+SUCCESSFUL  p17.v3.AfterSyncInvariantTest#constructorRejectsMismatch
+SUCCESSFUL  p17.v3.AfterCharacterisationTest#consistentDeclarationsAreInSync
+SUCCESSFUL  p17.v3.AfterCharacterisationTest#scopedDeclaration
+SUCCESSFUL  p17.v3.AfterCharacterisationTest#setValue
+SUCCESSFUL  p17.v3.AfterCharacterisationTest#simpleDeclaration
+SUCCESSFUL  p17.v3.BeforeCharacterisationTest#consistentDeclarationsAreInSync
+SUCCESSFUL  p17.v3.BeforeCharacterisationTest#scopedDeclaration
+SUCCESSFUL  p17.v3.BeforeCharacterisationTest#setValue
+SUCCESSFUL  p17.v3.BeforeCharacterisationTest#simpleDeclaration
+SUCCESSFUL  p17.v2.EventBDefectTest#d2ValidPathsStillAccepted
+SUCCESSFUL  p17.v2.EventBDefectTest#d2BlankScopeSegmentRejected
+SUCCESSFUL  p17.v2.EventBDefectTest#d1ScopedDeclarationIsAssigned
+SUCCESSFUL  p17.v2.EventBDefectTest#d2ScopeSegmentWithSeparatorRejected
+SUCCESSFUL  p17.v2.EventBDefectTest#d2SetNameRejectsSeparator
+SUCCESSFUL  p17.v2.EventBDefectTest#d2ConstructorRejectsSeparatorInName
+SUCCESSFUL  p17.v2.EventBDefectTest#d1SimpleDeclarationIsAssigned
+
+Test run finished after 105 ms
+[         6 containers found      ]
+[         0 containers skipped    ]
+[         6 containers started    ]
+[         0 containers aborted    ]
+[         6 containers successful ]
+[         0 containers failed     ]
+[        25 tests found           ]
+[         0 tests skipped         ]
+[        25 tests started         ]
+[         0 tests aborted         ]
+[        25 tests successful      ]
+[         0 tests failed          ]
+

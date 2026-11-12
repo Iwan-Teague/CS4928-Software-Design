@@ -20,6 +20,13 @@ Minh's `minh` runs, Samuel's RQ drafting, and so on); nothing about them is asse
 | 2026-11-06 | Audited the RQ2 v2 run on branch `minh` (ORs, evidence-ratio proxy, notebook diff) and drafted the v2 sections | `RESULT.md` v2 entry and `DEVIATIONS.md` item 5 | ORs recomputed from Minh's raw contrast CSVs with the v1 `awk` rule; Q8 split (7/12/40) recounted independently from the raw export; sha256 of his files recorded |
 | 2026-11-06 | Drafted `M4-DESIGN.md` and this file | The M4 design record (PRE_EVENT_B) | Every claim in it points to committed tests, rerun green on 2026-11-06 |
 
+## Samuel: material AI contributions (Claude)
+
+| Date | What the AI did | Decision it affected | How it was checked |
+|---|---|---|---|
+| 2026-11-12 | Drafted the Event B prediction, defined the two defects (D1, D2) from Table 2 and the PRE_EVENT_B code, wrote the reproduction tests, the fix, the backlog planner and `event-b/EVENT-B.md` | Event B response (B1 chosen, Week 9 "partly supported") | Prediction committed and tagged before any test or fix; 5 defect tests shown failing on the unfixed code and passing after; 18 Week 9 tests unchanged and green; planner means recomputed from the raw export (59 respondents). Tests ran under javac + JUnit Platform, not `mvn` (Maven Central unreachable): `mvn test` to be rerun by the group |
+| 2026-11-12 | Pointed out that Week 9 quoted the ChatGPT-generated negative V3 comment, not the original neutral one | The section 5 finding in `EVENT-B.md` | Checked against Table 2 of the paper (p. 8) |
+
 ## What was rejected or corrected
 
 None recorded in this repo's history: no AI suggestion was rejected or needed correcting beyond the normal
