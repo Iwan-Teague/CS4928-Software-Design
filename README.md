@@ -22,3 +22,9 @@ Two layouts sit side by side. Only the first is the group's M2 evidence trail.
 - **Evidence trail (start here):** `RESULT.md` (result, version log, sha256 of raw files, threats, independent cross-check), `DEVIATIONS.md`, `ACCESSED.txt`, `original/`, `docker/`, `work/` (v1 and seeds 1, 2, 3), `run_seeds.sh`, build logs. Git tags: `M1_PLAN`, `M2_REPRO`, `PRE_EVENT_A`.
 - **Saif's package, as committed on `main` before the merge:** the root-level `Dockerfile`, `analyse_experiment.Rmd`, `export_jan_23_no_ip_no_email.csv`, `pt_1.1/`, `pt_1.1.tar.gz` and `output/`, from his copy of the artefact (`f447363`, "as downloaded"). Saif then edited the root `Dockerfile` in `4b5f973` (dropped `-march=native`, added `remotes` and the packages the notebook loads, copied the analysis into the image); the other files are as downloaded. `output/` has not been checked against the authors' published results here.
 - **Saif's urgency-only re-run and dashboards** are Saif's own work, committed in `4b5f973`: `output_urgency/` (seeded re-run, results, diagnostics and dashboard), `output/dashbaord_Saif.html`, `HOW_TO_RUN.md` (loading and running his image) and `.dockerignore`. `RESULT.md` credits the re-run as an independent cross-check.
+
+## Event B (added 2026-11-12)
+
+`event-b/PREDICTION.md` (tag `EVENT_B_PREDICTION`, frozen before any Event B code), then `event-b/EVENT-B.md` (tag `EVENT_B`):
+two defects in `ConstDeclNode` reproduced and fixed in `event-a/design` (25 tests), and the backlog reprioritised under a
+one-sprint budget by `event-b/analysis/event_b_plan.py` (6 tests). Compare with Week 9: `git diff PRE_EVENT_B EVENT_B`.

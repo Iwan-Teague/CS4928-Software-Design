@@ -1,0 +1,7 @@
+budget_units,technical_sprint,sentiment_sprint,sets_differ
+3,D1+D2+V2,D1+D2+V2,0
+4,D1+D2+V4,D1+D2+V2+V1,1
+5,D1+D2+V4+V2,D1+D2+V2+V4,0
+6,D1+D2+V4+V2+V1,D1+D2+V3-R2,1
+7,D1+D2+V4+V2+V1,D1+D2+V3-R2+V2,1
+8,D1+D2+V4+V3-R2,D1+D2+V3-R2+V2+V1,1

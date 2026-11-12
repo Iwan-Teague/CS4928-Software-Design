@@ -14,6 +14,7 @@ public final class ConstPath {
 
     public ConstPath(List<String> scope, String name) {
         this.scope = List.copyOf(Objects.requireNonNull(scope, "scope"));
+        this.scope.forEach(ConstPath::requireName);   // Event B (D2): scope segments obey the same rule as names
         this.name = requireName(name);
     }
 
@@ -41,9 +42,11 @@ public final class ConstPath {
         return scope.isEmpty() ? name : String.join("::", scope) + "::" + name;
     }
 
+    /** One path part: not null, not blank, and no "::" (Event B, D2: otherwise two paths can print the same). */
     static String requireName(String name) {
         Objects.requireNonNull(name, "name");
         if (name.isBlank()) throw new IllegalArgumentException("name must not be blank");
+        if (name.contains("::")) throw new IllegalArgumentException("'" + name + "' must not contain '::'");
         return name;
     }
 }
