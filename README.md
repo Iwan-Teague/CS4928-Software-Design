@@ -27,4 +27,5 @@ Two layouts sit side by side. Only the first is the group's M2 evidence trail.
 
 `event-b/PREDICTION.md` (tag `EVENT_B_PREDICTION`, frozen before any Event B code), then `event-b/EVENT-B.md` (tag `EVENT_B`):
 two defects in `ConstDeclNode` reproduced and fixed in `event-a/design` (25 tests), and the backlog reprioritised under a
-one-sprint budget by `event-b/analysis/event_b_plan.py` (6 tests). Compare with Week 9: `git diff PRE_EVENT_B EVENT_B`.
+one-sprint budget by `event-b/analysis/event_b_plan.py` (6 tests). Every claim is linked to its evidence in `event-b/EVIDENCE-INDEX.md`.
+Compare with Week 9: `git diff PRE_EVENT_B EVENT_B`.
