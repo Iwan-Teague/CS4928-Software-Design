@@ -1,0 +1,58 @@
+# mvn -B -o test in event-a/design, run 2026-11-13 (macOS). State: Java sources and tests identical to tag EVENT_B.
+# Environment:
+#   Apache Maven 3.10.0 (c43a36b8d67be7e0805a411bc0898af1a51f5472)
+#   Maven home: /opt/homebrew/Cellar/maven/3.10.0/libexec
+#   Java version: 21.0.12.1, vendor: Homebrew, runtime: /opt/homebrew/Cellar/openjdk@21/21.0.12.1/libexec/openjdk.jdk/Contents/Home
+#   Default locale: en_IE, platform encoding: UTF-8, time zone: Europe/Dublin
+# Output:
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ----------------< ie.ul.cs4928.g22:p17-event-a-design >-----------------
+[INFO] Building P17 Event A: Vignette 3 refactoring (bounded model) 1.0
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] Loaded 24471 auto-discovered prefixes for remote repository central (prefixes-central.txt)
+[INFO] Loaded 64 auto-discovered prefixes for remote repository apache.snapshots (prefixes-apache.snapshots.txt)
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ p17-event-a-design ---
+[INFO] skip non existing resourceDirectory <repo>/event-a/design/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ p17-event-a-design ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 4 source files with javac [debug release 17] to target/classes
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ p17-event-a-design ---
+[INFO] skip non existing resourceDirectory <repo>/event-a/design/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ p17-event-a-design ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 8 source files with javac [debug release 17] to target/test-classes
+[INFO] <repo>/event-a/design/src/test/java/p17/v3/Decl.java: <repo>/event-a/design/src/test/java/p17/v3/Decl.java uses or overrides a deprecated API.
+[INFO] <repo>/event-a/design/src/test/java/p17/v3/Decl.java: Recompile with -Xlint:deprecation for details.
+[INFO] 
+[INFO] --- surefire:3.5.2:test (default-test) @ p17-event-a-design ---
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running p17.v2.EventBDefectTest
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.063 s -- in p17.v2.EventBDefectTest
+[INFO] Running p17.v3.AfterSyncInvariantTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.014 s -- in p17.v3.AfterSyncInvariantTest
+[INFO] Running p17.v3.AfterCharacterisationTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in p17.v3.AfterCharacterisationTest
+[INFO] Running p17.v3.BeforeCharacterisationTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.008 s -- in p17.v3.BeforeCharacterisationTest
+[INFO] Running p17.v3.BeforeSyncBugTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in p17.v3.BeforeSyncBugTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 25, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.398 s
+[INFO] Finished at: 2026-11-13T12:48:46Z
+[INFO] ------------------------------------------------------------------------

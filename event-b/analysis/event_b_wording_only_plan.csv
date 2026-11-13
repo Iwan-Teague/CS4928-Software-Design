@@ -1,0 +1,7 @@
+budget_units,technical_sprint,negative_based_sprint,neutral_based_sprint,wording_only_difference
+3,D1+D2+V2,D1+D2+V2,D1+D2+V1,V1+V2
+4,D1+D2+V4,D1+D2+V2+V1,D1+D2+V1+V2,none
+5,D1+D2+V4+V2,D1+D2+V2+V4,D1+D2+V1+V4,V1+V2
+6,D1+D2+V4+V2+V1,D1+D2+V3-R2,D1+D2+V3-R2,none
+7,D1+D2+V4+V2+V1,D1+D2+V3-R2+V2,D1+D2+V3-R2+V1,V1+V2
+8,D1+D2+V4+V3-R2,D1+D2+V3-R2+V2+V1,D1+D2+V3-R2+V1+V2,none
