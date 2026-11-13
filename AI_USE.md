@@ -29,7 +29,8 @@ Minh's runs, Samuel's RQ drafting, and so on); nothing about them is asserted he
 
 ## What was rejected or corrected
 
-Found in the 13 Nov 2026 review of the frozen cells and the Event B draft against the committed files, and corrected:
+Found in the 13 Nov 2026 review of the frozen cells and the Event B draft against the committed files, and corrected in the
+13 Nov text (Event A timing: `EVENT-A-STATUS.md`):
 
 - **V1 claim (Event A and M4 cells).** The AI-drafted conclusion said negative wording made V1 look more urgent. The data say otherwise
   (negative 2.267, neutral 2.414). Rejected; the Event B text follows the data.
