@@ -25,3 +25,11 @@
    Unlike v1, no evidence-ratio file is saved (no equivalent of Deviation 4), so the v2 evidence rating in
    `RESULT.md` uses the contrast proxy (up/down), not the notebook's Evid.Ratio. Model, priors, data filters
    and sampling are otherwise the authors'.
+
+6. 2026-11-18, RQ2 like-for-like rerun (v2b in `RESULT.md`), run by Iwan Teague. Recorded after the seed-20261013 run was started
+   (that run was launched first; the seed runs 1, 2, 3 were written into `run_seeds_rq2.sh` before they ran).
+   `work/rq2-s20261013/analyse_urgency_rq2.Rmd` is v1's `work/analyse_urgency_seeded.Rmd` with exactly one line changed (line 71):
+   `perception_3 = df$perception.qs_3` -> `df$perception.qs_2` (the M1 RQ2 manipulation, as in item 5). Seed 20261013 kept, numeric evidence
+   ratios saved (item 4 stays in the notebook), Urgency only, same image `p17-rstudio:original`. Seeds 1, 2, 3 differ only in the two seed values
+   (`work/rq2-seed-N/`). It replaces the up/down proxy of item 5 with the notebook's own Evid.Ratio.
+   The first launch failed at the Stan compile (the Docker VM killed `cc1plus`: out of memory); nothing from it was used, the run was repeated unchanged.

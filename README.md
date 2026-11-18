@@ -17,9 +17,12 @@ deviation from the original before re-running. Never overwrite M1 or earlier ent
 
 ## Repository map (added 2026-10-14, after merging `iwan` into `main`)
 
+*Note added 2026-11-18: the branch `iwan` mentioned above existed only on a local machine and was never pushed to GitHub; its work is on `main` through the merge `796369c` (2026-10-14).*
+
 Two layouts sit side by side. Only the first is the group's M2 evidence trail.
 
 - **Evidence trail (start here):** `RESULT.md` (result, version log, sha256 of raw files, threats, independent cross-check), `DEVIATIONS.md`, `ACCESSED.txt`, `original/`, `docker/`, `work/` (v1 and seeds 1, 2, 3), `run_seeds.sh`, build logs. Git tags: `M1_PLAN`, `M2_REPRO`, `PRE_EVENT_A`.
+- **RQ2 (grouping by Q8, added 2026-11-18):** Minh's run is in `RQ2_results/` (v2 in `RESULT.md`); the like-for-like rerun with the notebook's own evidence ratio is `work/rq2-s20261013/` and `work/rq2-seed-1`, `-2`, `-3`, started by `run_seeds_rq2.sh` (v2b in `RESULT.md`, item 6 in `DEVIATIONS.md`).
 - **Saif's package, as committed on `main` before the merge:** the root-level `Dockerfile`, `analyse_experiment.Rmd`, `export_jan_23_no_ip_no_email.csv`, `pt_1.1/`, `pt_1.1.tar.gz` and `output/`, from his copy of the artefact (`f447363`, "as downloaded"). Saif then edited the root `Dockerfile` in `4b5f973` (dropped `-march=native`, added `remotes` and the packages the notebook loads, copied the analysis into the image); the other files are as downloaded. `output/` has not been checked against the authors' published results here.
 - **Saif's urgency-only re-run and dashboards** are Saif's own work, committed in `4b5f973`: `output_urgency/` (seeded re-run, results, diagnostics and dashboard), `output/dashbaord_Saif.html`, `HOW_TO_RUN.md` (loading and running his image) and `.dockerignore`. `RESULT.md` credits the re-run as an independent cross-check.
 

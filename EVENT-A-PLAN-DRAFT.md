@@ -11,6 +11,7 @@ Adoption timeline:
 - **2026-11-03** - the lecturer's reply confirmed Event A is applicable and that a partial attempt is acceptable.
 - **Through 2026-11-05** - the tracker's Event A prediction cell still said a prediction was impossible; no prediction was frozen.
 - **2026-11-06** - the run landed on branch `iwan` (11:34 UTC). The plan and prediction were recorded **after** the run; tag `EVENT_A_PLAN` was created 2026-11-06, after the run, and says so. Recorded status: Partial.
+- **2026-11-18 (note added)** - the branch `iwan` named above existed only on a local machine and was never pushed to GitHub. The run's commit is `3eb0d4a` (2026-11-06 11:34 UTC), which is on `main`, and the files are under `event-a/`.
 
 Deadline: **Fri 30 Oct 18:00** (Brightspace folder "Deadline - Event 1 Transfer Test"). Event A prediction assessment in the lab: extended to **Mon 2 Nov** for
 students who missed Monday's (bank holiday) lab (announcement 28 Oct).

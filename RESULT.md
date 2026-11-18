@@ -17,6 +17,7 @@ Frozen M1 (Student Tracker, G22 / P17) is quoted, not rewritten.
 |---|---|---|---|
 | v0 | authors' files, unmodified (`original/`, `docker/Dockerfile`) | none | Build failed at `devtools::install_github('stan-dev/cmdstanr')`: "The package 'remotes' is required" (`build-attempt1-failed.log`). No analysis was run. |
 | v1 | `work/analyse_urgency_seeded.Rmd` in the image built from `docker/Dockerfile.fixed` | Deviations 1-4 in `DEVIATIONS.md`: `remotes` added to the build; `set.seed(20261013)` and `ulam(seed=20261013)`; Urgency only; numeric evidence ratios saved. Model, priors, data filters and sampling are the authors'. | Yes, once, 2026-10-13 |
+| v2b | `work/rq2-s20261013/analyse_urgency_rq2.Rmd` = v1 notebook with one line changed (`perception_3 = df$perception.qs_3` -> `qs_2`), same image | Deviation 6 in `DEVIATIONS.md`: RQ2 grouping (Q8) run with v1's own code, seed 20261013, numeric evidence ratios saved; seeds 1, 2, 3 as sensitivity. | Yes, 2026-11-18 |
 
 ## v1: run 2026-10-13, seed 20261013
 
@@ -54,6 +55,8 @@ Status against the frozen rule: **REPRODUCED** (Agree OR 1.940 inside 1.85-2.05 
 
 Committed in this repo on branch `iwan`.
 
+*Note added 2026-11-18: the branch `iwan` existed only on a local machine and was never pushed to GitHub. Its commits reached `main` by the merge `796369c` (2026-10-14); `RESULT.md`, `DEVIATIONS.md` and the v1 files are on `main` and under tags `M2_REPRO` and later.*
+
 ### Threats and limits
 
 - **OR definition.** The Rmd does not compute an OR; we derived it from the simulated contrasts as above. If the tracker's wording of "P(score up) / P(score down)" means something else (for example on posterior contrasts instead of simulated scores), the numbers change. Check the wording before the Week 7 entry.
@@ -67,6 +70,7 @@ Committed in this repo on branch `iwan`.
 |---|---|---|
 | v1 seeds 1, 2, 3 (sensitivity) | seed only | DONE 2026-10-13, see the section above |
 | v2 (RQ2) | grouping column `perception.qs_3` (Q9) replaced by `perception.qs_2` (Q8, "acceptable practice") | M1 RQ2: "swapping Q9 for Q8". DONE 2026-10-22 (Minh, seed 42), see the v2 section below |
+| v2b (RQ2, like-for-like evidence ratio) | v1 notebook, only the grouping column changed to `perception.qs_2`; seeds 20261013, 1, 2, 3 | replaces the up/down proxy in v2 with the notebook's own Evid.Ratio. DONE 2026-11-18, see the v2b section below |
 
 ## v1 sensitivity: seeds 1, 2, 3 (run 2026-10-13, after v1)
 
@@ -161,3 +165,56 @@ Raw evidence (sha256, Minh's submitted files):
     0e22c314bdd1599d204cf6be37fa9de27a0351f57981dd8be58b0f80e086ba36  RQ2_results/Urgency perception-1.csv
     a1941587ae54c6a0be3cd292d18e04c2c50343670ea7b3f666521e4043764bb7  RQ2_results/Urgency perception-2.csv
     fe839e615c484ea56c86888d8e855af2c9821aa6ee219af59cae89f469af4eda  RQ2_results/Urgency perception-3.csv
+
+## v2b: RQ2 rerun with the notebook's own evidence ratio, 2026-11-18 (seed 20261013, then seeds 1, 2, 3)
+
+Why: the v2 entry above rated the Q8 groups with an up/down proxy because Minh's run saved no evidence ratios, and compared that to v1's brms
+`hypothesis()` Evid.Ratio. The two are different quantities: on v1's own contrast files the up/down proxy for Agree is 1.94 while the saved
+Evid.Ratio is 141.86. So v2's "Strong -> Anecdotal" compared two scales and is withdrawn (v2 stays in this file as written, per the append-only rule).
+
+Code: `work/rq2-s20261013/analyse_urgency_rq2.Rmd` is `work/analyse_urgency_seeded.Rmd` (v1) with exactly one line changed, line 71:
+`perception_3 = df$perception.qs_3` -> `df$perception.qs_2` (the M1 RQ2 manipulation). Same image `p17-rstudio:original`, same data, same model, priors,
+sampling, seed 20261013, and the saved `evidence Urgency.csv` (Deviation 4). Run with the v1 command on `work/rq2-s20261013/`.
+Seeds 1, 2, 3 were written into `run_seeds_rq2.sh` before any seed run (same seeds as v1's sensitivity set); output in `work/rq2-seed-N/`.
+The first launch of the seed-20261013 run failed at the Stan compile (the Docker VM killed `cc1plus` for lack of memory); no output from it was used.
+It was re-launched unchanged after memory was freed. The seed-20261013 run was started before Deviation 6 was written down; the seed runs were not.
+
+Evidence ratio (Evid.Ratio from `evidence Urgency.csv`) and rating (the notebook's own thresholds: <3 Anecdotal, 3-10 Moderate, >10 Strong); OR from the
+saved contrasts with the v1 `awk` rule:
+
+| Run (grouping, seed) | Agree OR | Agree ER | No Opinion OR | No Opinion ER | Disagree OR | Disagree ER |
+|---|---|---|---|---|---|---|
+| v1 (Q9, 20261013) | 1.940 | 141.86 Strong | 1.060 | 1.24 Anecdotal | 1.088 | 1.59 Anecdotal |
+| v2b (Q8, 20261013) | 1.702 | 9.28 Moderate | 1.137 | 2.01 Anecdotal | 1.302 | 7.44 Moderate |
+| v2b (Q8, 1) | 1.715 | 8.93 Moderate | 1.174 | 1.96 Anecdotal | 1.317 | 7.15 Moderate |
+| v2b (Q8, 2) | 1.629 | 8.76 Moderate | 1.154 | 2.06 Anecdotal | 1.309 | 6.86 Moderate |
+| v2b (Q8, 3) | 1.694 | 10.30 Strong | 1.163 | 2.15 Anecdotal | 1.318 | 7.91 Moderate |
+
+v1 under seeds 1, 2, 3 (Q9, from the section above): Agree ER 99.00 / 101.56 / 128.03 (Strong), No Opinion ER 1.25 / 1.17 / 1.20 and Disagree ER
+1.61 / 1.65 / 1.51 (both Anecdotal) in every v1 run.
+
+Status against the frozen rule ("different if any group's evidence rating changes or its OR moves by more than 0.3"):
+
+- **Disagree** rating changes Anecdotal -> Moderate in all four v2b runs (ER 6.86-7.91 against 1.51-1.65 in v1). This alone makes RQ2 **DIFFERENT**, and it does not depend on the seed.
+- **Agree** ER falls from 99-142 to 8.76-10.30. The label becomes Moderate in three runs and stays Strong in one (seed 3, 10.30, just over the cutoff of 10), so the Agree label itself sits on the boundary; the size of the drop does not.
+- **Agree OR** moves by -0.24, -0.24, -0.33, -0.26 against v1 at the same seed (20261013, 1, 2, 3): within 0.3 in three runs, past it in one (seed 2).
+- No Opinion stays Anecdotal; its OR moves +0.08 to +0.13.
+- M1's directional expectation holds: Disagree OR 1.30-1.32 is above 1.10, now with Moderate evidence.
+
+Cross-check with v2: Minh's contrasts (seed 42) gave ORs 1.678 / 1.176 / 1.294 (Agree / No Opinion / Disagree); this rerun gives 1.70 / 1.14 / 1.30 at seed 20261013 and 1.63-1.72 / 1.15-1.17 / 1.31-1.32 across the other seeds. Same pattern, not identical, as expected for different seeds.
+
+Correction to v2: its Agree rating "Anecdotal for" came from the up/down proxy and was too low; like-for-like it is Moderate (Strong at one seed). The verdict
+DIFFERENT stands, but it is now driven by Disagree (Anecdotal -> Moderate in every run) and by Agree's evidence falling about tenfold, not by Agree dropping to Anecdotal.
+
+Threats: still one dataset of 59 respondents; four seeds, not a long sampling study; the Agree label depends on a cutoff its evidence ratio straddles; ORs and
+evidence ratios are model output, not observed counts; the rerun is ours, using v1's notebook, so it shares v1's package-version drift (Deviation 1).
+
+Raw evidence (sha256):
+
+    fe26cadf2d8f668cc90fc6d3d84123ee9ae5f0f5f9a198200a924f595c7696ea  work/rq2-s20261013/evidence Urgency.csv
+    16131a3b3e41f9e87767ec12a658c983a83e9371319c6cbda8863a408185fff5  work/rq2-s20261013/Urgency perception-1.csv
+    148a7d322ece440ae76b582e755e4a14dde24438e5f4db0becf4b4ae6150f281  work/rq2-s20261013/Urgency perception-2.csv
+    525b26fa42940a0d930355a6e467f2cae650e242a436e2ffa97890eb0de1f57a  work/rq2-s20261013/Urgency perception-3.csv
+    0e86e3fe2b03e9465103929e1957284d760ed20c373c1560638b24bcc8a8444b  work/rq2-seed-1/evidence Urgency.csv
+    e12a24e286ee4fd1eda26cbf2b1a34bb9fdf752d81daeeafaa0dff6e98793013  work/rq2-seed-2/evidence Urgency.csv
+    bd591cc9c39cd20c00b2bebd824e316141e68dba6a0cd58b42a3c7fdc03fbc66  work/rq2-seed-3/evidence Urgency.csv
